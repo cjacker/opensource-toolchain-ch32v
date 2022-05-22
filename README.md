@@ -122,6 +122,37 @@ After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and '
 
 
 # Flashing and Debugging
-ch55xtool for ISP mode
+There is 2 way to programming a ch32v MCU, ISP and RVSWD.
+
+## ISP programming
+A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can support program WCH CH55x 8051 MCUs and WCH CH32V103/307 Risc-V MCU.
+
+**Installation:**
+
+```
+git clone https://github.com/karlp/ch552tool.git
+cd ch552tool
+git checkout for-upstream-2
+sudo install -m0755 ch55xtool/ch55xtool.py /usr/bin/ch55xtool
+```
+
+**Programming:**
+You need enter ISP mode first. 
+
+- connect your development board to Linux PC
+- find the 'boot0' and 'reset' key on your development board
+- **hold the BOOT0 key down, press RESET key and release it, after a while (about 1 second), release BOOT0 key**
+- run `lsusb`, you will find something like '4348:55e0 WinChipHead'.
+
+After enter ISP mode, take above blink example as demo (and wire up a LED to A8 pin), the programming process as below:
+
+```
+sudo ch55xtool -f build/CH32V.bin
+```
+
+you may need to press 'reset' key again after programming.
+
+## OpenOCD programming and debugging
+
 wch-openocd for RVSWD mode
 
