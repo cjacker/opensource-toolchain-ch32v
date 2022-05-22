@@ -4,3 +4,5 @@ find . -name \*.S|sed 's@^\./@@g;s@$@ \\@g'|head -n 1 > startup_asm_source.list
 
 sed "s/C_SOURCE_LIST/$(sed -e 's/[\&/]/\\&/g' -e 's/$/\\n/' c_source.list | tr -d '\n')/" Makefile.ch32vtemplate >Makefile
 sed -i "s/STARTUP_ASM_SOURCE_LIST/$(sed -e 's/[\&/]/\\&/g' -e 's/$/\\n/' startup_asm_source.list | tr -d '\n'|head -n 1)/" Makefile
+
+rm -f c_source.list startup_asm_source.list 
