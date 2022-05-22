@@ -89,6 +89,33 @@ and add `/opt/xpack-riscv-toolchain/bin` to PATH env according to your shell.
 **NOTE**, the target triplet of xpack riscv toolchain is **`riscv-none-embed`**.
 
 # SDK
+If you used to do stm32 programming, you will feel very familiar with CH32V SDK.
+
+WCH provide evaluate source code package for every CH32V MCU model and licensed under Apache-2.0, you can download them from WCH official website according to your MCU model.
+
+For ch32v103, you should download it from http://www.wch.cn/downloads/CH32V103EVT_ZIP.html.
+
+For ch32v307, the link is http://www.wch.cn/downloads/CH32V307EVT_ZIP.html
+
+These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, in this repo, I provide a simple script and a Makefile template to help you convert it. after 'CH32VxxxEVT.ZIP' downloaded, the conversion process as below:
+
+```
+git clone https://github.com/cjacker/opensource-toolchain-ch32v.git
+cd opensource-toolchain-ch32v/myproject
+mkdir evt
+unzip CH32VxxxEVT.ZIP -d evt
+cp -r evt/EVT/EXAM/SRC/* .
+# take some codes from TOUCHKEY demo.
+cp -r evt/EVT/EXAM/TOUCHKEY/User .
+rm -f User/main.c
+# replace it with our blink demo
+cp -r main.c User/
+./generate_makefile
+make
+```
+
+After building complete, you will get 
+
 
 # Flashing and Debugging
 ch55xtool for ISP mode
