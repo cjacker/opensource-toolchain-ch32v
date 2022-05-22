@@ -20,7 +20,7 @@ Such adapters usually support dual mode (SWD for ARM and RVSWD for CH32V)and can
 # Toolchain overview
 * Compiler: gcc
 * Debugger: openocd/gdb
-* SDK: 
+* SDK: official EVT source package
 * Programmer: ch55xtool for ISP mode/openocd for RVSWD
 
 # RISC-V GNU Toolchain
@@ -154,11 +154,12 @@ sudo ch55xtool -f build/CH32V.bin
 you may need to press 'reset' key again after programming.
 
 ## OpenOCD programming and debugging
+
 CH32V did NOT support JTAG/SWD programming and debugging interface, it had implemented a private protocol named 'RVSWD'. that's to say, you can not use  your SWD/JTAG usb adapters to program/debug CH32V. and it also can not supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
 
 You have to prepare a 'wchlink' usb adapter with WCH RiscV mcu support and build a forkd version OpenOCD with 'wlink' interface supported.
 
-** Build and Install WCH OpenOCD: **
+**Build and Install WCH OpenOCD:**
 
 If you choose to use MRS prebuilt toolchain and WCH OpenOCD for Linux (as mention in Compiler section), you can ignore the building process.
 
@@ -173,6 +174,7 @@ sudo make install
 After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 **Programming:**
+
 Please wire up you 'wchlink' usb adapter with development board (pins as same as SWD) first and use 'wch-riscv.cfg' provide in this repo
 
 ```
