@@ -11,7 +11,7 @@ Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced b
 # Hardware requirements
 * A development board with CH32V mcu
 
-It's easy to find agd32v103 or gd32v307 board.
+It's easy to find a ch32v103 or ch32v307 board.
 
 * A 'wchlink' USB SWD/RVSWD adapter
  
