@@ -118,7 +118,7 @@ rm -rf evt
 make
 ```
 
-After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and 'build/CH32V.bin', which can be used for debugging and programming.
+After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and 'build/CH32V.bin', which can be used for debugging and programming later.
 
 
 # Flashing and Debugging
@@ -175,7 +175,7 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 **Programming:**
 
-Please wire up you 'wchlink' usb adapter with development board (pins as same as SWD) first and use 'wch-riscv.cfg' provide in this repo
+Please wire up you 'wchlink' usb adapter with development board (pins as same as SWD) first and use 'wch-riscv.cfg' (for WCH OpenOCD 0.11-dev) provide in this repo.
 
 ```
 # erase all
