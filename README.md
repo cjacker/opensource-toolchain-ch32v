@@ -137,9 +137,10 @@ sudo install -m0755 ch55xtool/ch55xtool.py /usr/bin/ch55xtool
 ```
 
 **Programming:**
+
 You need enter ISP mode first. 
 
-- connect your development board to Linux PC
+- connect your development board directly to Linux PC USB port.
 - find the 'boot0' and 'reset' key on your development board
 - **hold the BOOT0 key down, press RESET key and release it, after a while (about 1 second), release BOOT0 key**
 - run `lsusb`, you will find something like '4348:55e0 WinChipHead'.
@@ -153,6 +154,55 @@ sudo ch55xtool -f build/CH32V.bin
 you may need to press 'reset' key again after programming.
 
 ## OpenOCD programming and debugging
+CH32V did NOT support JTAG/SWD programming and debugging interface, it had implemented a private protocol named 'RVSWD'. that's to say, you can not use  your SWD/JTAG usb adapters to program/debug CH32V. and it also can not supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
 
-wch-openocd for RVSWD mode
+You have to prepare a 'wchlink' usb adapter with WCH RiscV mcu support and build a forkd version OpenOCD with 'wlink' interface supported.
+
+** Build and Install WCH OpenOCD: **
+
+If you choose to use MRS prebuilt toolchain and WCH OpenOCD for Linux (as mention in Compiler section), you can ignore the building process.
+
+```
+git clone https://github.com/kprasadvnsi/riscv-openocd-wch.git
+cd riscv-openocd-wch
+./configure --prefix=/opt/wch-openocd --program-prefix=wch- --enable-wlink
+make
+sudo make install
+```
+
+After installation finished, add '/opt/wch-openocd/bin' to PATH env.
+
+**Programming:**
+Please wire up you 'wchlink' usb adapter with development board (pins as same as SWD) first and use 'wch-riscv.cfg' provide in this repo
+
+```
+# erase all
+sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "flash erase_sector wch_riscv 0 last " -c exit
+# program
+sudo wch-openocd -f wch-riscv.cfg  -c init -c halt  -c "program xxx.hex\bin\elf "  -c exit
+# verify
+sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "verify_image xxx.hex\bin\elf"    -c exit
+# reset/resume
+sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c wlink_reset_resume    -c exit
+```
+
+**Debugging**
+
+```
+sudo openocd -f wch-riscv.cfg
+# open another term
+riscv-none-embed-gdb ./build/CH32V.elf
+(gdb) target remote :3333
+Remote debugging using :3333
+_start () at Startup/startup_ch32v10x.S:15
+15              j       handle_reset
+(gdb) load
+Loading section .init, size 0x38 lma 0x0
+Loading section .vector, size 0x108 lma 0x38
+Loading section .text, size 0x211c lma 0x140
+Loading section .data, size 0x84 lma 0x225c
+Start address 0x00000000, load size 8928
+Transfer rate: 3 KB/sec, 2232 bytes/write.
+(gdb)
+```
 
