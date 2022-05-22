@@ -101,20 +101,24 @@ These evt source code packages contains core SDK and a lot of demo routines but 
 
 ```
 git clone https://github.com/cjacker/opensource-toolchain-ch32v.git
-cd opensource-toolchain-ch32v/myproject
 mkdir evt
 unzip CH32VxxxEVT.ZIP -d evt
-cp -r evt/EVT/EXAM/SRC/* .
+# copy core sdk to myproject dir
+cp -r ../evt/EVT/EXAM/SRC/* myproject
 # take some codes from TOUCHKEY demo.
-cp -r evt/EVT/EXAM/TOUCHKEY/User .
-rm -f User/main.c
+cp -r evt/EVT/EXAM/TOUCHKEY/User myproject
+
+cd myproject
 # replace it with our blink demo
-cp -r main.c User/
+rm -f User/main.c
+mv main.c User/
+# clean up
+rm -rf evt
 ./generate_makefile
 make
 ```
 
-After building complete, you will get 
+After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and 'build/CH32V.bin', which can be used for debugging and programming.
 
 
 # Flashing and Debugging
