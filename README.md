@@ -1,5 +1,7 @@
 # Opensource toolchain for WCH ch32v RISC-V 32bit MCU
 
+**NOTE: the MIT license of this repo means all individual resources made by myself, the content of the tutorial and the example codes is licensed under MIT. All third-party opensource projects, upstream source codes and patches to other opensource projects will/should follow their own LICENSE.**
+
 CH32V Risc-V 32bit MCU series is a family of General-Purpose RISC-V MCU from WCH.
 
 If you want to learn more about it, please refer to http://www.wch-ic.com/products/categories/47.html?pid=5.
