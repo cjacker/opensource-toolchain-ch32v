@@ -11,9 +11,7 @@ These MCUs support a private debugging protocol named 'RVSWD' and requires a spe
 Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by request from opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch).
 
 # Hardware requirements
-* A development board with CH32V mcu
-
-It's easy to find a ch32v103 or ch32v307 board.
+* A development board with CH32V mcu such as ch32v103/ch32v203 or ch32v307 board.
 
 * A 'wchlink' USB SWD/RVSWD adapter
  
@@ -97,7 +95,9 @@ WCH provide evaluate source code package for every CH32V MCU model and licensed 
 
 For ch32v103, you should download it from http://www.wch.cn/downloads/CH32V103EVT_ZIP.html.
 
-For ch32v307, the link is http://www.wch.cn/downloads/CH32V307EVT_ZIP.html
+For ch32v20x, https://www.wch.cn/downloads/CH32V20xEVT_ZIP.html
+
+For ch32v307, http://www.wch.cn/downloads/CH32V307EVT_ZIP.html
 
 These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, in this repo, I provide a simple script and a Makefile template to help you convert it. after 'CH32VxxxEVT.ZIP' downloaded, the conversion process as below:
 
