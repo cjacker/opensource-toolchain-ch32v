@@ -117,8 +117,59 @@ mv main.c User/
 # clean up
 rm -rf evt
 ./generate_makefile
-make
 ```
+
+Before type `make' to build the project, you need:
+
+* edit Makefile to choose correct 'Startup' asm file.
+
+For example, for [flappyboard](https://github.com/metro94/FlappyBoard) with CH32V203G6, you should modify the Makefile from:
+```
+# ASM sources
+ASM_SOURCES =  \
+Startup/startup_ch32v20x_D8W.S \
+```
+
+to 
+```
+# ASM sources
+ASM_SOURCES =  \
+Startup/startup_ch32v20x_D6.S \
+```
+
+* edit `Ld/Link.ld` to match your MCU.
+
+For example, for [flappyboard](https://github.com/metro94/FlappyBoard) with CH32V203G6, you should modify the 'MEMORY' section in 'Link.ld' to:
+```
+MEMORY
+{  
+/* CH32V20x_D6 - CH32V203F6-CH32V203G6-CH32V203K6-CH32V203C6 */
+
+	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 32K
+	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 10K
+
+
+/* CH32V20x_D6 - CH32V203K8-CH32V203C8-CH32V203G8-CH32V203F8 */
+/*
+	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 64K
+	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 20K
+*/
+  
+/* CH32V20x_D8 - CH32V203RB
+   CH32V20x_D8W - CH32V208x
+   FLASH + RAM supports the following configuration
+   FLASH-128K + RAM-64K
+   FLASH-144K + RAM-48K
+   FLASH-160K + RAM-32K
+
+	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 160K
+	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 32K
+*/
+}
+
+```
+
+then type `make` to build the project.
 
 After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and 'build/CH32V.bin', which can be used for debugging and programming later.
 
