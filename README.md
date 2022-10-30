@@ -169,6 +169,11 @@ MEMORY
 
 ```
 
+* edit 'User/main.c' to setup correct GPIO port according to the board schematic.
+
+for flappyboard, the LED connect to PB8.
+
+
 then type `make` to build the project.
 
 After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and 'build/CH32V.bin', which can be used for debugging and programming later.
