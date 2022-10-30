@@ -90,9 +90,9 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 LDSCRIPT = Ld/Link.ld 
 
 # libraries
-LIBS = -lc -lm
+LIBS = -lc -lm -lnosys
 LIBDIR = 
-LDFLAGS = $(MCU) -mno-save-restore -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -Wunused -Wuninitialized -g -T $(LDSCRIPT) -nostartfiles -Xlinker --gc-sections -L"../" -Wl,-Map=$(BUILD_DIR)/$(TARGET).map --specs=nano.specs --specs=nosys.specs -o "SWDTest.elf" $(LIBS)
+LDFLAGS = $(MCU) -mno-save-restore -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -Wunused -Wuninitialized -nostartfiles -Xlinker --gc-sections --specs=nosys.specs -Wl,-Map=$(BUILD_DIR)/$(TARGET).map -T$(LDSCRIPT) $(LIBS)
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
