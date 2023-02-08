@@ -114,8 +114,8 @@ mkdir evt
 unzip CH32VxxxEVT.ZIP -d evt
 # copy core sdk to myproject dir
 cp -r evt/EVT/EXAM/SRC/* myproject
-# take some codes from TOUCHKEY demo.
-cp -r evt/EVT/EXAM/TOUCHKEY/User myproject
+# take some codes from GPIO_Toggle demo.
+cp -r evt/EVT/EXAM/GPIO/GPIO_Toggle/User myproject
 
 cd myproject
 # replace it with our blink demo
@@ -123,7 +123,12 @@ rm -f User/main.c
 mv main.c User/
 # clean up
 rm -rf evt
+
+# if not ch32v003, run
 ./generate_makefile
+
+# if ch32v003, run
+./generate_makefile ch32v003
 ```
 
 Before type `make' to build the project, you need:
