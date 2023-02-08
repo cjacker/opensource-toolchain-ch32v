@@ -109,10 +109,11 @@ These evt source code packages contains core SDK and a lot of demo routines but 
 
 ```
 git clone https://github.com/cjacker/opensource-toolchain-ch32v.git
+cd opensource-toolchain-ch32v
 mkdir evt
 unzip CH32VxxxEVT.ZIP -d evt
 # copy core sdk to myproject dir
-cp -r ../evt/EVT/EXAM/SRC/* myproject
+cp -r evt/EVT/EXAM/SRC/* myproject
 # take some codes from TOUCHKEY demo.
 cp -r evt/EVT/EXAM/TOUCHKEY/User myproject
 
