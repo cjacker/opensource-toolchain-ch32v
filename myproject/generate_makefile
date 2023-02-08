@@ -1,8 +1,16 @@
 #!/bin/sh
+
 find . -type f -name "*.c"|sed 's@^\./@@g;s@$@ \\@g' > c_source.list
 find . -name \*.S|sed 's@^\./@@g;s@$@ \\@g'|head -n 1 > startup_asm_source.list
 
 sed "s/C_SOURCE_LIST/$(sed -e 's/[\&/]/\\&/g' -e 's/$/\\n/' c_source.list | tr -d '\n')/" Makefile.ch32vtemplate >Makefile
 sed -i "s/STARTUP_ASM_SOURCE_LIST/$(sed -e 's/[\&/]/\\&/g' -e 's/$/\\n/' startup_asm_source.list | tr -d '\n'|head -n 1)/" Makefile
 
-rm -f c_source.list startup_asm_source.list 
+rm -f c_source.list startup_asm_source.list
+
+#special treatment for ch32v003
+if [ $1"x" = "ch32v003""x" ]; then
+	sed -i "s/--specs=nosys.specs/--specs=nano.specs --specs=nosys.specs/g" Makefile
+	sed -i "s/CPU = -march=rv32imac -mabi=ilp32/CPU = -march=rv32ec -mabi=ilp32e/g" Makefile
+fi
+
