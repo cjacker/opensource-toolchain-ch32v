@@ -26,7 +26,7 @@ int main(void)
 	Delay_Init();
 	USART_Printf_Init(115200);
 	InitGPIO();
-	printf("SystemClk:%d\r\n", SystemCoreClock);
+	printf("SystemClk:%lu\r\n", SystemCoreClock);
 	printf("This is printf example\r\n");
 
 	while (1)
