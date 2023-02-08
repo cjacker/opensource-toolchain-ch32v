@@ -14,8 +14,7 @@ Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced b
 * A development board with CH32V mcu such as ch32v103/ch32v203 or ch32v307 board.
 
 * A 'wchlink' USB SWD/RVSWD adapter
- 
-Such adapters usually support dual mode (SWD for ARM and RVSWD for CH32V)and can be toggled by jumper or on-board keys.
+  + wchlink USB adapter usually support dual modes (SWD for ARM and RVSWD for CH32V) and can be toggled by jumpers or on-board buttons.
 
 # Toolchain overview
 * Compiler: gcc
@@ -169,10 +168,7 @@ MEMORY
 
 ```
 
-* edit 'User/main.c' to setup correct GPIO port according to the board schematic.
-
-for flappyboard, the LED connect to PB8.
-
+* edit 'User/main.c' to setup correct GPIO port according to the schematic. For flappyboard, the LED connect to PB8.
 
 then type `make` to build the project.
 
@@ -180,10 +176,16 @@ After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and '
 
 
 # Flashing and Debugging
+
 There is 2 way to programming a ch32v MCU, ISP and RVSWD.
 
 ## ISP programming
+
+ISP programming doesn't need a wchlink adapter, you can connect the board directly to PC USB port.
+
 A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can support program WCH CH55x 8051 MCUs and WCH CH32V103/307 Risc-V MCU.
+
+There is another opensource project [wchisp](https://github.com/ch32-rs/wchisp), but up to v2.0, it is hang when probing device. I will try it again when there is a new release.
 
 **Installation:**
 
@@ -197,10 +199,16 @@ sudo install -m0755 ch55xtool/ch55xtool.py /usr/bin/ch55xtool
 **Programming:**
 
 You need enter ISP mode first. 
+- hold the 'BOOT0' button down then power on the device (connect the device to USB port).
+
+or 
 
 - connect your development board directly to Linux PC USB port.
-- find the 'boot0' and 'reset' key on your development board
-- **hold the BOOT0 key down, press RESET key and release it, after a while (about 1 second), release BOOT0 key**
+- find the 'BOOT0' and 'RESET' button on your development board
+- **hold the BOOT0 button down, press the RESET button then release it, after a while (about 1 second), release BOOT0 button**
+
+then 
+
 - run `lsusb`, you will find something like '4348:55e0 WinChipHead'.
 
 After enter ISP mode, take above blink example as demo (and wire up a LED to A8 pin), the programming process as below:
@@ -213,9 +221,9 @@ you may need to press 'reset' key again after programming.
 
 ## OpenOCD programming and debugging
 
-CH32V did NOT support JTAG/SWD programming and debugging interface, it had implemented a private protocol named 'RVSWD'. that's to say, you can not use  your SWD/JTAG usb adapters to program/debug CH32V. and it also can not supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
+CH32V do NOT support JTAG/SWD programming and debugging interface, it had implemented a private protocol named 'RVSWD'. that's to say, you can not use your SWD/JTAG usb adapters to program/debug CH32V. and it also can not supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
 
-You have to prepare a 'wchlink' usb adapter with WCH RiscV mcu support and build a forkd version OpenOCD with 'wlink' interface supported.
+You have to prepare a 'wchlink' usb adapter with WCH RISC-V mcu support and build a forkd version OpenOCD with 'wlink' interface supported.
 
 **Build and Install WCH OpenOCD:**
 
@@ -233,7 +241,7 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 **Programming:**
 
-Please wire up you 'wchlink' usb adapter with development board (pins as same as SWD) first and use 'wch-riscv.cfg' (for WCH OpenOCD 0.11-dev) provide in this repo.
+Please wire up you 'wchlink' usb adapter with development board (pins as same as SWD) and use 'wch-riscv.cfg' (for WCH OpenOCD 0.11-dev) provide in this repo.
 
 ```
 # erase all
