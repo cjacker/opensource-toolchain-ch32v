@@ -11,9 +11,6 @@
 void InitGPIO()
 {
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
 	{
 		GPIO_InitTypeDef  GPIO_InitStructure;
 		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;

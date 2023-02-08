@@ -12,5 +12,6 @@ rm -f c_source.list startup_asm_source.list
 if [ $1"x" = "ch32v003""x" ]; then
 	sed -i "s/--specs=nosys.specs/--specs=nano.specs --specs=nosys.specs/g" Makefile
 	sed -i "s/CPU = -march=rv32imac -mabi=ilp32/CPU = -march=rv32ec -mabi=ilp32e/g" Makefile
+	sed -i "s/GPIO_Pin_8/GPIO_Pin_5/g" User/main.c
 fi
 
