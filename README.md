@@ -4,7 +4,7 @@ CH32V RISC-V 32bit MCU series is a family of General-Purpose RISC-V MCU from WCH
 
 If you want to learn more about it, please refer to http://www.wch-ic.com/products/categories/47.html?pid=5.
 
-These MCUs use a private debugging protocol named 'RVSWD' and requires a special (but not expensive) usb adapter named 'wchlink'. it implemented in WCH forked OpenOCD with 'wlink' interface. At first, the WCH forked OpenOCD is close source and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent).
+These MCUs use a private debugging protocol named 'RVSWD' and requires a special (but not expensive) usb adapter named 'WCH-LINK'. it implemented in WCH forked OpenOCD with 'wlink' interface. At first, the WCH forked OpenOCD is close source and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent).
 
 Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by request from opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch).
 
@@ -92,11 +92,14 @@ and add `/opt/xpack-riscv-toolchain/bin` to PATH env according to your shell.
 **NOTE**, the target triplet of xpack riscv toolchain is **`riscv-none-embed`**.
 
 # SDK
+
 If you used to do stm32 programming, you will feel very familiar with CH32V SDK.
 
 WCH provide evaluate source code package for every CH32V MCU model and licensed under Apache-2.0, you can download them from WCH official website according to your MCU model.
 
-For ch32v103, you should download it from http://www.wch.cn/downloads/CH32V103EVT_ZIP.html.
+For ch32v003, https://www.wch.cn/downloads/CH32V003EVT_ZIP.html
+
+For ch32v103, http://www.wch.cn/downloads/CH32V103EVT_ZIP.html.
 
 For ch32v20x, https://www.wch.cn/downloads/CH32V20xEVT_ZIP.html
 
@@ -225,17 +228,18 @@ you may need to press 'reset' key again after programming.
 
 ## OpenOCD programming and debugging
 
-CH32V do NOT support JTAG/SWD programming and debugging interface, it had implemented a private protocol named 'RVSWD'. that's to say, you can not use your SWD/JTAG usb adapters to program/debug CH32V. and it also can not supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
+CH32V do NOT support JTAG/SWD programming and debugging interface, it had implemented a private protocol named 'RVSWD', and a 1-wire interface named SDI for CH32V003. that's to say, you can not use SWD/JTAG usb adapters to program/debug CH32V. and these proprietary interfaces also can not be supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
 
-You have to prepare a 'wchlink' usb adapter with WCH RISC-V mcu support and build a forkd version OpenOCD with 'wlink' interface supported.
+You have to prepare a 'WCH-LINK' or 'WCH-LINKE'(to program CH32V003) usb adapter and build a forkd version OpenOCD with 'wlink' enabled.
 
 **Build and Install WCH OpenOCD:**
 
 If you choose to use MRS prebuilt toolchain and WCH OpenOCD for Linux (as mention in Compiler section), you can ignore the building process.
 
 ```
-git clone https://github.com/kprasadvnsi/riscv-openocd-wch.git
-cd riscv-openocd-wch
+git clone https://github.com/karlp/openocd-hacks/
+cd openocd-hacks
+git submodule update --init --progress
 ./configure --prefix=/opt/wch-openocd --program-prefix=wch- --enable-wlink
 make
 sudo make install
@@ -245,7 +249,7 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 **Programming:**
 
-Please wire up you 'wchlink' usb adapter with development board (pins as same as SWD) and use 'wch-riscv.cfg' (for WCH OpenOCD 0.11-dev) provide in this repo.
+Please wire up you 'WCH-LINK' or 'WCH-LINKE' usb adapter with your development board (as same as SWD) and use 'wch-riscv.cfg' (for MRS Toolchain) provide in this repo. For CH32V003, only the SWDIO pin is needed.
 
 ```
 # erase all
