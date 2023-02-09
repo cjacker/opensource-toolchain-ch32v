@@ -56,29 +56,28 @@ export PATH=/opt/riscv-gnu-toolchain/bin:$PATH
 
 ## Use prebuilt toolchain
 
-There are a lot of prebuilt riscv toolchains you can download and use directly if it support the arch 'rv32imac'. Here are two choices with well support.
+There are a lot of prebuilt riscv toolchains, Here are two choices with well support.
 
-*   MounRiver studio toolchain
+### MounRiver studio toolchain
 
-MounRiver provide a prebuilt toolchain for linux, you can download it from [MounRiver Studio website](http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.60.tar.xz). up to this tutorial written, the lastest version is "MRS_Toolchain_Linux_x64_V1.60.tar.xz", it include a prebuilt gnu toolchain and prebuilt openocd with RVSWD and SDI support.
+MounRiver provide a prebuilt toolchain for linux, you can download it from [MounRiver Studio website](http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.60.tar.xz). up to this tutorial written, the lastest version is "MRS_Toolchain_Linux_x64_V1.60.tar.xz", it include a prebuilt gnu toolchain (gcc 8.2.0) and prebuilt openocd with RVSWD and SDI support.
 
-After download finished, extract it to somewhere, and change the unprofessinal dir name and modify the PATH env, for example:
+After download and extract it to somewhere, Please change the toolchain's bad dir name:
 
 ```
 sudo mkdir -p /opt/mrs-riscv-toolchain
 sudo tar xf MRS_Toolchain_Linux_x64_V1.60.tar.xz -C /opt/mrs-riscv-toolchain --strip-components=1 
-# correct the dir name
+# correct the dir name with space
 sudo mv /opt/mrs-riscv-toolchain/"RISC-V Embedded GCC" /opt/mrs-riscv-toolchain/risv-none-embed-gcc
 ```
 
 And add `/opt/mrs-riscv-toolchain/riscv-none-embed-gcc/bin` to PATH env according to your shell.
 
-You also need add `/opt/mrs-riscv-toolchain/OpenOCD/bin` to PATH env if you want to use this prebuild OpenOCD.
-
+You also need add `/opt/mrs-riscv-toolchain/OpenOCD/bin` to PATH env if you want to use this prebuilt OpenOCD.
 
 **NOTE**, the target triplet of mrs riscv toolchain is **`riscv-none-embed`**.
 
-*   Xpack riscv toolchain
+#### Xpack riscv toolchain
 
 [xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack) provde a prebuilt toolchain for riscv. you can download it from [here](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases). 
 
