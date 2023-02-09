@@ -112,12 +112,12 @@ git clone https://github.com/cjacker/opensource-toolchain-ch32v.git
 cd opensource-toolchain-ch32v
 mkdir evt
 unzip CH32VxxxEVT.ZIP -d evt
-# copy core sdk to myproject dir
-cp -r evt/EVT/EXAM/SRC/* myproject
+# copy core sdk to project_template dir
+cp -r evt/EVT/EXAM/SRC/* project_template
 # take some codes from GPIO_Toggle demo.
-cp -r evt/EVT/EXAM/GPIO/GPIO_Toggle/User myproject
+cp -r evt/EVT/EXAM/GPIO/GPIO_Toggle/User project_template
 
-cd myproject
+cd project_template
 # replace it with our blink demo
 rm -f User/main.c
 mv main.c User/
