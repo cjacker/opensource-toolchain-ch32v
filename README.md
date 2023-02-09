@@ -157,18 +157,18 @@ There is 2 way to programming a CH32V MCU: ISP and RVSWD.
 
 ISP programming doesn't need a WCH-LINK or WCH-LINKE adapter, you can connect the board directly to PC USB port.
 
-A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can support program WCH CH55x 8051 MCUs and WCH CH32V103/307 RISC-V MCU.
-
-There is another opensource project [wchisp](https://github.com/ch32-rs/wchisp), but up to v2.0, it hang when probing device. I will try it again when it has a new release.
+The best opensource WCH ISP tool is [wchisp](https://github.com/ch32-rs/wchisp), which support more parts than other solutions, it is written in rust lang.
 
 **Installation:**
 
 ```
-git clone https://github.com/karlp/ch552tool.git
-cd ch552tool
-git checkout for-upstream-2
-sudo install -m0755 ch55xtool/ch55xtool.py /usr/bin/ch55xtool
+git clone https://github.com/ch32-rs/wchisp.git
+cd wchisp
+cargo build --release
+sudo install -m0755 target/release/wchisp /usr/bin/wchisp
 ```
+
+A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, you can have a try yourself.
 
 **Programming:**
 
@@ -185,13 +185,13 @@ Then
 
 - run `lsusb`, you will find something like '4348:55e0 WinChipHead'.
 
-After enter ISP mode, take above blink example as demo (and wire up a LED to A5 pin), the programming process as below:
+After enter ISP mode, take above blink example as demo (change the LED port according to your board), the programming process as below:
 
 ```
-sudo ch55xtool -f build/CH32V.bin
+sudo wchisp flash build/CH32V.bin
 ```
 
-You may need to press 'RESET' button again after programming.
+You may need to press 'RESET' button to reset the board after programming.
 
 ## OpenOCD programming and debugging
 
