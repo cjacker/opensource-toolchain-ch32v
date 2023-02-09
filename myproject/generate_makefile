@@ -1,5 +1,12 @@
 #!/bin/sh
 
+#always remove main.c in currentdir, it should already mv to User dir
+rm -f main.c
+
+#fix Link.ld linebreak
+sed -i "s/\r/\r\n/g" Ld/Link.ld
+
+# collect sources and asms.
 find . -type f -name "*.c"|sed 's@^\./@@g;s@$@ \\@g' > c_source.list
 find . -name \*.S|sed 's@^\./@@g;s@$@ \\@g'|head -n 1 > startup_asm_source.list
 
@@ -8,10 +15,30 @@ sed -i "s/STARTUP_ASM_SOURCE_LIST/$(sed -e 's/[\&/]/\\&/g' -e 's/$/\\n/' startup
 
 rm -f c_source.list startup_asm_source.list
 
-#special treatment for ch32v003
+
+# special treatment for ch32v003
 if [ $1"x" = "ch32v003""x" ]; then
 	sed -i "s/--specs=nosys.specs/--specs=nano.specs --specs=nosys.specs/g" Makefile
-	sed -i "s/CPU = -march=rv32imac -mabi=ilp32/CPU = -march=rv32ec -mabi=ilp32e/g" Makefile
+	sed -i "s/CPU = -march=rv32imac_zicsr -mabi=ilp32/CPU = -march=rv32ec -mabi=ilp32e/g" Makefile
 	sed -i "s/GPIO_Pin_8/GPIO_Pin_5/g" User/main.c
 fi
+
+# special treatment for flappyboard with ch32v203g6 
+# onboard LED is PB8
+if [ $1"x" = "flappyboard203""x" ]; then
+	rm -f Ld/Link.ld
+	cp Link_ch32v203g6_flappyboard.ld Ld/
+	sed -i "s/startup_ch32v20x_D8W.S/startup_ch32v20x_D6.S/g" Makefile
+	sed -i "s/--specs=nosys.specs/--specs=nano.specs --specs=nosys.specs/g" Makefile
+	sed -i "s/GPIOA/GPIOB/g" User/main.c
+	sed -i "s/Delay_Us(500\*1000);/Delay_Us(50\*1000);/g" User/main.c 
+fi
+
+# special treatment for ch32v103 bluepill
+# onboard LED is PC13
+if [ $1"x" = "bluepill103""x" ]; then
+    sed -i "s/GPIOA/GPIOC/g" User/main.c
+	sed -i "s/GPIO_Pin_8/GPIO_Pin_13/g" User/main.c
+fi
+
 
