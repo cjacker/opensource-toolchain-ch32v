@@ -1,19 +1,21 @@
 # Opensource toolchain for WCH CH32V RISC-V 32bit MCU
 
-CH32V RISC-V 32bit MCU series is a family of General-Purpose RISC-V MCU from WCH.
+WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU based on QingKe core.
 
 If you want to learn more about it, please refer to http://www.wch-ic.com/products/categories/47.html?pid=5.
 
-CH32V103/203/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-LINK' or 'WCH-LINKE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
+CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-LINK' or 'WCH-LINKE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
 
 At first, the WCH forked OpenOCD is close source and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch).
 
-When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it also need a 'WCH-LINKE' adapter, old 'WCH-LINK' adatper can not support this 1-wire interface. Up to now, only this OpenOCD fork (https://github.com/karlp/openocd-hacks/) can support it.
+When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LINKE' adapter instead old 'WCH-LINK', 'WCH-LINK'(without E) adatper can not support this 1-wire interface. Up to now, only this OpenOCD fork (https://github.com/karlp/openocd-hacks/) can support it.
+
+By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core microcontroller integrated with BLE wireless communication, these parts also covered by this tutorial.
 
 
 # Hardware prerequist
 
-* A CH32V board, either ch32v003 or v103/v203/v305/v307, etc.
+* A CH32V board or WCH CH5xx RISC-V BLE board
 * A 'WCH-LINK' or 'WCH-LINKE' adapter
   - only 'WCH-LINKE' support programming CH32V003 with 1-wire SDI interface.
   - 'WCH-LINK' / 'WCH-LINKE' USB adapter usually support dual modes (SWD for ARM and RVSWD for CH32V) and can be toggled by jumpers or on-board buttons.
@@ -107,7 +109,15 @@ For ch32v20x, https://www.wch.cn/downloads/CH32V20xEVT_ZIP.html
 
 For ch32v30x, http://www.wch.cn/downloads/CH32V307EVT_ZIP.html
 
-These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, in this repo, I provide a simple script and a Makefile template to help you convert it. after 'CH32VxxxEVT.ZIP' downloaded, the conversion process as below:
+For ch571/573, https://www.wch.cn/downloads/CH573EVT_ZIP.html
+
+For ch581/582/583, https://www.wch.cn/downloads/CH583EVT_ZIP.html
+
+These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, in this repo, here provide a simple script and a Makefile template to help you convert it. 
+
+## For CH32V 
+
+After 'CH32VxxxEVT.ZIP' downloaded, the conversion process as below:
 
 ```
 git clone https://github.com/cjacker/opensource-toolchain-ch32v.git
@@ -148,6 +158,31 @@ Then type `make` to build the project.
 
 After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and 'build/CH32V.bin', which can be used for debugging and programming later.
 
+
+## For CH5XX RISC-V BLE
+
+After 'CH573EVT.ZIP' or 'CH583EVT.ZIP' downloaded, the conversion process as below:
+
+```
+git clone https://github.com/cjacker/opensource-toolchain-ch32v.git
+cd opensource-toolchain-ch32v
+mkdir evt
+unzip CH5xxEVT.ZIP -d evt
+# copy core sdk to project_template_ble_ch5xx dir
+cp -r evt/EVT/EXAM/SRC/* project_template_ble_ch5xx
+# take some codes from HID_CompliantDev demo.
+cp -r evt/EVT/EXAM/USB/Device/HID_CompliantDev/src project_template_ble_ch5xx
+
+cd project_template_ble_ch5xx
+
+./generate_makefile [ch571|ch573|ch581|ch582|ch583]
+```
+
+Then type `make` to build the project.
+
+After building complete, you will get 'build/ch5??_ble.elf', 'build/ch5??_ble.hex' and 'build/ch5??_ble.bin', which can be used for debugging and programming later.
+
+**Note:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, the static library named 'libISP573.a' and 'libISP583.a' is provided in binary format.
 
 # Flashing and Debugging
 
