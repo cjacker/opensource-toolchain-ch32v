@@ -4,26 +4,26 @@ CH32V RISC-V 32bit MCU series is a family of General-Purpose RISC-V MCU from WCH
 
 If you want to learn more about it, please refer to http://www.wch-ic.com/products/categories/47.html?pid=5.
 
-These MCUs use a private debugging protocol named 'RVSWD' and requires a special (but not expensive) usb adapter named 'WCH-LINK'. it implemented in WCH forked OpenOCD with 'wlink' interface. At first, the WCH forked OpenOCD is close source and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent).
+CH32V103/203/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-LINK' or 'WCH-LINKE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
 
-Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by request from opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch).
+At first, the WCH forked OpenOCD is close source and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch).
 
-**Update:** A new one-wire proprietary interface named 'SDI'? was introduced with CH32V003. Up to now, only this openocd fork (https://github.com/karlp/openocd-hacks/) can support it.
+When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it also need a 'WCH-LINKE' adapter, old 'WCH-LINK' adatper can not support this 1-wire interface. Up to now, only this OpenOCD fork (https://github.com/karlp/openocd-hacks/) can support it.
 
 
 # Hardware prerequist
 
 * A CH32V board, either ch32v003 or v103/v203/v305/v307, etc.
 * A 'WCH-LINK' or 'WCH-LINKE' adapter
-  - only WCH-LINKE support programming CH32V003
-  - WCH-LINK or WCH-LINKE USB adapter usually support dual modes (SWD for ARM and RVSWD for CH32V) and can be toggled by jumpers or on-board buttons.
+  - only 'WCH-LINKE' support programming CH32V003 with 1-wire SDI interface.
+  - 'WCH-LINK' / 'WCH-LINKE' USB adapter usually support dual modes (SWD for ARM and RVSWD for CH32V) and can be toggled by jumpers or on-board buttons.
 
 # Toolchain overview
 
 * Compiler: gcc
 * Debugger: openocd/gdb
 * SDK: official EVT source package
-* Programmer: ch55xtool for ISP mode / openocd for RVSWD(2 wire)/SDI(1 wire, used by CH32V003)
+* Programmer: ch55xtool for ISP mode / openocd for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
 
 # RISC-V GNU Toolchain
 
@@ -136,6 +136,7 @@ Before type `make' to build the project, you need:
 * edit Makefile to choose correct 'Startup' asm file.
 
 For example, for [flappyboard](https://github.com/metro94/FlappyBoard) with CH32V203G6, you should modify the Makefile from:
+
 ```
 # ASM sources
 ASM_SOURCES =  \
@@ -152,6 +153,7 @@ Startup/startup_ch32v20x_D6.S \
 * edit `Ld/Link.ld` to match your MCU.
 
 For example, for [flappyboard](https://github.com/metro94/FlappyBoard) with CH32V203G6, you should modify the 'MEMORY' section in 'Link.ld' to:
+
 ```
 MEMORY
 {  
@@ -190,15 +192,15 @@ After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and '
 
 # Flashing and Debugging
 
-There is 2 way to programming a ch32v MCU, ISP and RVSWD.
+There is 2 way to programming a CH32V MCU: ISP and RVSWD.
 
 ## ISP programming
 
-ISP programming doesn't need a wchlink adapter, you can connect the board directly to PC USB port.
+ISP programming doesn't need a WCH-LINK or WCH-LINKE adapter, you can connect the board directly to PC USB port.
 
-A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can support program WCH CH55x 8051 MCUs and WCH CH32V103/307 Risc-V MCU.
+A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can support program WCH CH55x 8051 MCUs and WCH CH32V103/307 RISC-V MCU.
 
-There is another opensource project [wchisp](https://github.com/ch32-rs/wchisp), but up to v2.0, it is hang when probing device. I will try it again when it has a new release.
+There is another opensource project [wchisp](https://github.com/ch32-rs/wchisp), but up to v2.0, it hang when probing device. I will try it again when it has a new release.
 
 **Installation:**
 
@@ -211,32 +213,34 @@ sudo install -m0755 ch55xtool/ch55xtool.py /usr/bin/ch55xtool
 
 **Programming:**
 
-You need enter ISP mode first. 
-- hold the 'BOOT0' button down then power on the device (connect the device to USB port).
+You need enter ISP mode first. please find the 'BOOT0' and 'RESET' button on your development board
+
+- hold the 'BOOT0' button down and power on the device (connect the device to USB port).
 
 or 
 
 - connect your development board directly to Linux PC USB port.
-- find the 'BOOT0' and 'RESET' button on your development board
-- **hold the BOOT0 button down, press the RESET button then release it, after a while (about 1 second), release BOOT0 button**
+- hold the BOOT0 button down, press the RESET button then release it, after a while (about 1 second), release BOOT0 button.
 
-then 
+Then 
 
 - run `lsusb`, you will find something like '4348:55e0 WinChipHead'.
 
-After enter ISP mode, take above blink example as demo (and wire up a LED to A8 pin), the programming process as below:
+After enter ISP mode, take above blink example as demo (and wire up a LED to A5 pin), the programming process as below:
 
 ```
 sudo ch55xtool -f build/CH32V.bin
 ```
 
-you may need to press 'reset' key again after programming.
+You may need to press 'RESET' button again after programming.
 
 ## OpenOCD programming and debugging
 
-CH32V do NOT support JTAG/SWD programming and debugging interface, it had implemented a private protocol named 'RVSWD', and a 1-wire interface named SDI for CH32V003. that's to say, you can not use SWD/JTAG usb adapters to program/debug CH32V. and these proprietary interfaces also can not be supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
+CH32V do NOT support JTAG/SWD programming / debugging interface, it had implemented a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named SDI for CH32V003. 
 
-You have to prepare a 'WCH-LINK' or 'WCH-LINKE'(to program CH32V003) usb adapter and build a forkd version OpenOCD with 'wlink' enabled.
+You can not use SWD/JTAG usb adapters to program/debug CH32V. and these proprietary interfaces also can not be supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
+
+You have to prepare a 'WCH-LINK' or 'WCH-LINKE'(to program CH32V003) usb adapter and build a forked version OpenOCD with 'wlink' enabled.
 
 **Build and Install WCH OpenOCD:**
 
