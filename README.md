@@ -80,11 +80,13 @@ You also need add `/opt/mrs-riscv-toolchain/OpenOCD/bin` to PATH env if you want
 
 *   Xpack riscv toolchain
 
-[xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/) provde a prebuilt toolchain for riscv. you can download it from https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/. up to this tutorial written, the lastest version is '12.2.0', after download finished, extract it and add path to PATH env, for example:
+[xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack) provde a prebuilt toolchain for riscv. you can download it from [here](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases). 
+
+**Note:** Due to the '-march' changes happened in gcc v12.0 and above, the latest prebuilt gcc version you can used with CH32V003 is 11.3.0. or use v10.2.0 from the deprecated [riscv-none-embed-gcc-xpack](https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack).
 
 ```
 sudo mkdir -p /opt/xpack-riscv-toolchain
-sudo tar xf xpack-riscv-none-elf-gcc-12.2.0-3-linux-x64.tar.gz -C /opt/xpack-riscv-toolchain --strip-components=1
+sudo tar xf xpack-riscv-none-elf-gcc-11.3.0-1-linux-x64.tar.gz -C /opt/xpack-riscv-toolchain --strip-components=1
 ```
 
 and add `/opt/xpack-riscv-toolchain/bin` to PATH env according to your shell.
@@ -124,68 +126,25 @@ mv main.c User/
 # clean up
 rm -rf evt
 
-# if not ch32v003, run
-./generate_makefile
+# if ch32v103 bluepill, run
+./generate_makefile bluepill103
+
+# if ch32v203g6 flappyboard, run
+./generate_makefile flappyboard203
 
 # if ch32v003, run
 ./generate_makefile ch32v003
 ```
 
-Before type `make' to build the project, you need:
+Before type `make' to build the project, you need to:
 
-* edit Makefile to choose correct 'Startup' asm file.
+* ensure choosing the correct 'Startup' asm file.
+* ensure the RAM/FLASH settings in `Ld/Link.ld` is correct.
+* edit 'User/main.c' to setup correct GPIO port.
 
-For example, for [flappyboard](https://github.com/metro94/FlappyBoard) with CH32V203G6, you should modify the Makefile from:
+For example, for [flappyboard](https://github.com/metro94/FlappyBoard) with CH32V203G6, you should use `Startup/startup_ch32v20x_D6.S` and the 'MEMORY' section in 'Link.ld' also need to be modified. All these changes had been done in `generate_makefile` script, if it is not suite for your MCU model, please modify it to match your MCU model.
 
-```
-# ASM sources
-ASM_SOURCES =  \
-Startup/startup_ch32v20x_D8W.S \
-```
-
-to 
-```
-# ASM sources
-ASM_SOURCES =  \
-Startup/startup_ch32v20x_D6.S \
-```
-
-* edit `Ld/Link.ld` to match your MCU.
-
-For example, for [flappyboard](https://github.com/metro94/FlappyBoard) with CH32V203G6, you should modify the 'MEMORY' section in 'Link.ld' to:
-
-```
-MEMORY
-{  
-/* CH32V20x_D6 - CH32V203F6-CH32V203G6-CH32V203K6-CH32V203C6 */
-
-	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 32K
-	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 10K
-
-
-/* CH32V20x_D6 - CH32V203K8-CH32V203C8-CH32V203G8-CH32V203F8 */
-/*
-	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 64K
-	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 20K
-*/
-  
-/* CH32V20x_D8 - CH32V203RB
-   CH32V20x_D8W - CH32V208x
-   FLASH + RAM supports the following configuration
-   FLASH-128K + RAM-64K
-   FLASH-144K + RAM-48K
-   FLASH-160K + RAM-32K
-
-	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 160K
-	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 32K
-*/
-}
-
-```
-
-* edit 'User/main.c' to setup correct GPIO port according to the schematic. For flappyboard, the LED connect to PB8.
-
-then type `make` to build the project.
+Then type `make` to build the project.
 
 After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and 'build/CH32V.bin', which can be used for debugging and programming later.
 
