@@ -81,7 +81,7 @@ You also need add `/opt/mrs-riscv-toolchain/OpenOCD/bin` to PATH env if you want
 
 [xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack) provde a prebuilt toolchain for riscv. you can download it from [here](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases). 
 
-**Note:** Due to the '-march' changes happened in gcc v12.0 and above, the latest prebuilt gcc version you can used with CH32V003 is 11.3.0. or use v10.2.0 from the deprecated [riscv-none-embed-gcc-xpack](https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack).
+**Note:** Due to the '-march' changes happened in gcc v12.0 and above, the latest prebuilt gcc version you can used with CH32V003 is 11.3.0. or use v10.2.0 from [riscv-none-embed-gcc-xpack](https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack).
 
 ```
 sudo mkdir -p /opt/xpack-riscv-toolchain
@@ -90,7 +90,8 @@ sudo tar xf xpack-riscv-none-elf-gcc-11.3.0-1-linux-x64.tar.gz -C /opt/xpack-ris
 
 and add `/opt/xpack-riscv-toolchain/bin` to PATH env according to your shell.
 
-**NOTE**, the target triplet of xpack riscv toolchain is **`riscv-none-elf`**.
+**NOTE**, the target triplet of xpack riscv toolchain is **`riscv-none-elf`**. for riscv-none-embed-gcc-xpack, the triplet is **`riscv-none-embed`**.
+
 
 # SDK
 
