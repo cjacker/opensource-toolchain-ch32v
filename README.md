@@ -103,7 +103,7 @@ For ch32v103, http://www.wch.cn/downloads/CH32V103EVT_ZIP.html.
 
 For ch32v20x, https://www.wch.cn/downloads/CH32V20xEVT_ZIP.html
 
-For ch32v307, http://www.wch.cn/downloads/CH32V307EVT_ZIP.html
+For ch32v30x, http://www.wch.cn/downloads/CH32V307EVT_ZIP.html
 
 These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, in this repo, I provide a simple script and a Makefile template to help you convert it. after 'CH32VxxxEVT.ZIP' downloaded, the conversion process as below:
 
