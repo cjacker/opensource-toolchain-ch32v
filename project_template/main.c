@@ -29,12 +29,10 @@ int main(void)
 	printf("SystemClk:%lu\r\n", SystemCoreClock);
 	printf("This is printf example\r\n");
 
-	while (1)
-	{
-		GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_RESET);
-		Delay_Us(500*1000);
-		GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
-		Delay_Us(500*1000);
-	}
+    while(1)
+    {
+        Delay_Ms(500);
+        GPIO_WriteBit(GPIOA, GPIO_Pin_8, (i == 0) ? (i = Bit_SET) : (i = Bit_RESET));
+    }
 }
 

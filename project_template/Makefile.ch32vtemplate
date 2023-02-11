@@ -34,7 +34,7 @@ STARTUP_ASM_SOURCE_LIST
 #######################################
 # binaries
 #######################################
-PREFIX = riscv-none-elf-
+PREFIX = riscv-none-embed-
 
 CC = $(PREFIX)gcc
 AS = $(PREFIX)gcc -x assembler-with-cpp
@@ -48,7 +48,7 @@ BIN = $(CP) -O binary -S
 # CFLAGS
 #######################################
 # cpu
-CPU = -march=rv32imac_zicsr -mabi=ilp32 -msmall-data-limit=8 
+CPU = -march=rv32imac -mabi=ilp32 -msmall-data-limit=8 
 
 # fpu
 #FPU = -mfpu=fpv5-d16
@@ -128,6 +128,11 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir $@		
 
+#######################################
+# Program
+#######################################
+program: $(BUILD_DIR)/$(TARGET).elf 
+	sudo wch-openocd -f /usr/share/wch-openocd/openocd/scripts/interface/wch-riscv.cfg -c 'init; halt; program $(BUILD_DIR)/$(TARGET).elf; reset; wlink_reset_resume; exit;'
 
 
 #######################################
