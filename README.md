@@ -253,7 +253,7 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 **Programming:**
 
-Please wire up you 'WCH-LINK' or 'WCH-LINKE' usb adapter with your development board (as same as SWD) and use 'wch-riscv.cfg' (for MRS Toolchain) provide in this repo. For CH32V003, only the SWDIO pin is needed.
+Please wire up you 'WCH-LINK' or 'WCH-LINKE' usb adapter with your development board (as same as SWD) and use 'wch-riscv.cfg' (for MRS Toolchain) provide in this repo. For CH32V003, you must prepare a 'WCH-LINKE' adapter and only the SWDIO(PD1) pin is needed.
 
 ```
 # erase all
