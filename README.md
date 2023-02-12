@@ -6,9 +6,9 @@ If you want to learn more about it, please refer to http://www.wch-ic.com/produc
 
 CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-LINK' or 'WCH-LINKE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
 
-At first, the WCH forked OpenOCD is close source and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch).
+At first, the WCH forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch).
 
-When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LINKE' adapter instead old 'WCH-LINK', 'WCH-LINK'(without E) adatper can not support this 1-wire interface. Up to now, only this OpenOCD fork (https://github.com/karlp/openocd-hacks/) can support it.
+When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LINKE' adapter instead old 'WCH-LINK', 'WCH-LINK'(without E) adatper can not support this 1-wire debugging interface. Up to now, only this OpenOCD fork (https://github.com/karlp/openocd-hacks/) can support the 1-wire interface.
 
 By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core microcontroller integrated with BLE wireless communication, these parts also covered by this tutorial.
 
