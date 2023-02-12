@@ -185,8 +185,6 @@ mkdir evt
 unzip CH5xxEVT.ZIP -d evt
 # copy core sdk to project_template_ble_ch5xx dir
 cp -r evt/EVT/EXAM/SRC/* project_template_ble_ch5xx
-# take some codes from HID_CompliantDev demo.
-cp -r evt/EVT/EXAM/USB/Device/HID_CompliantDev/src project_template_ble_ch5xx
 
 cd project_template_ble_ch5xx
 
@@ -195,9 +193,11 @@ cd project_template_ble_ch5xx
 
 Then type `make` to build the project.
 
-After building complete, you will get 'build/ch5??_ble.elf', 'build/ch5??_ble.hex' and 'build/ch5??_ble.bin', which can be used for debugging and programming later.
+After building complete, you will get 'build/ch5xx_ble.elf', 'build/ch5xx_ble.hex' and 'build/ch5xx_ble.bin', which can be used for debugging and programming later.
 
-**Note:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, the static library named 'libISP573.a' and 'libISP583.a' is provided in binary format.
+**Note 1:** This demo only blink LED connect to PA8.
+
+**Note 2:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, the static library named 'libISP573.a' and 'libISP583.a' is provided in binary format.
 
 # Flashing and Debugging
 
