@@ -232,9 +232,9 @@ You may need to press 'RESET' button to reset the board after programming.
 
 CH32V do NOT support JTAG/SWD programming / debugging interface, it had implemented a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named SDI for CH32V003. 
 
-You can not use SWD/JTAG usb adapters to program/debug CH32V. and these proprietary interfaces also can not be supported by official OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
+You can not use SWD/JTAG usb adapters to program/debug CH32V. and these proprietary interfaces also can not be supported by upstream OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
 
-You have to prepare a 'WCH-LINK' or 'WCH-LINKE'(to program CH32V003) usb adapter and build a forked version OpenOCD with 'wlink' enabled.
+You have to prepare a 'WCH-LINK' or 'WCH-LINKE'(to program CH32V003) usb adapter and build a forked version OpenOCD with 'wlink' interface enabled.
 
 **Build and Install WCH OpenOCD:**
 
@@ -253,7 +253,7 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 **Programming:**
 
-Please wire up you 'WCH-LINK' or 'WCH-LINKE' usb adapter with your development board (as same as SWD) and use 'wch-riscv.cfg' (for MRS Toolchain) provide in this repo. For CH32V003, you must prepare a 'WCH-LINKE' adapter and only the SWDIO(PD1) pin is needed.
+Please wire up you 'WCH-LINK' or 'WCH-LINKE' usb adapter with your development board (as same as SWD) and use 'wch-riscv.cfg' (for MRS Toolchain) provide in this repo. For CH32V003, you must prepare a 'WCH-LINK' with 'E' adapter and only the SWDIO(PD1) pin is needed.
 
 ```
 # erase all
@@ -266,12 +266,14 @@ sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "verify_image xxx.hex\bin\e
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c wlink_reset_resume    -c exit
 ```
 
+For all makefile demos in this repo, you can use 'make program' to program the target device.
+
 **Debugging**
 
 ```
 sudo openocd -f wch-riscv.cfg
 # open another term
-riscv-none-embed-gdb ./build/CH32V.elf
+riscv-none-embed-gdb ./build/ch32v103.elf
 (gdb) target remote :3333
 Remote debugging using :3333
 _start () at Startup/startup_ch32v10x.S:15
