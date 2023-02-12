@@ -22,6 +22,7 @@ void InitGPIO()
 
 int main(void)
 {
+    u8 i = 0;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	Delay_Init();
 	USART_Printf_Init(115200);
@@ -29,12 +30,10 @@ int main(void)
 	printf("SystemClk:%lu\r\n", SystemCoreClock);
 	printf("This is printf example\r\n");
 
-	while (1)
-	{
-		GPIO_WriteBit(GPIOC, GPIO_Pin_13, Bit_RESET);
-		Delay_Us(50*1000);
-		GPIO_WriteBit(GPIOC, GPIO_Pin_13, Bit_SET);
-		Delay_Us(50*1000);
-	}
+    while(1)
+    {
+        Delay_Ms(500);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_13, (i == 0) ? (i = Bit_SET) : (i = Bit_RESET));
+    }
 }
 

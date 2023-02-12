@@ -1,7 +1,7 @@
 ######################################
 # target
 ######################################
-TARGET = CH32V
+TARGET = ch32v203g6
 
 
 ######################################
@@ -60,7 +60,7 @@ Startup/startup_ch32v20x_D6.S \
 #######################################
 # binaries
 #######################################
-PREFIX = riscv-none-elf-
+PREFIX = riscv-none-embed-
 
 CC = $(PREFIX)gcc
 AS = $(PREFIX)gcc -x assembler-with-cpp
@@ -74,7 +74,7 @@ BIN = $(CP) -O binary -S
 # CFLAGS
 #######################################
 # cpu
-CPU = -march=rv32imac_zicsr -mabi=ilp32 -msmall-data-limit=8 
+CPU = -march=rv32imac -mabi=ilp32 -msmall-data-limit=8 
 
 # fpu
 #FPU = -mfpu=fpv5-d16
