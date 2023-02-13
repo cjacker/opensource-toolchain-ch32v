@@ -26,7 +26,7 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 - [Flashing and Debugging](https://github.com/cjacker/opensource-toolchain-ch32v#flashing-and-debugging)
   + [ISP programming](https://github.com/cjacker/opensource-toolchain-ch32v#isp-programming)
   + [OpenOCD programming and debugging](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming-and-debugging)
-  
+- [How to switch between dual modes of WCH-LinkE](https://github.com/cjacker/opensource-toolchain-ch32v/blob/main/README.md#how-to-switch-modes-of-wch-linke)
 
 # Hardware prerequist
 
