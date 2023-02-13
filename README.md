@@ -306,3 +306,9 @@ Transfer rate: 3 KB/sec, 2232 bytes/write.
 (gdb)
 ```
 
+# How to switch modes of WCH-LinkE
+
+Usually, there are buttons on WCH-LinkE adapter, hold the 'mode' button download and plugin, it will switch to another mode.
+
+WCH-LinkE also support switching modes by software, Please refer to https://github.com/cjacker/wchlinke-mode-switch, a command line tool support switching WCH-LinkE modes between DAP / RV from Host.
+
