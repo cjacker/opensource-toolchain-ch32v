@@ -1,0 +1,3 @@
+[submodule "wchlinke-mode-switch"]
+	path = wchlinke-mode-switch
+	url = https://github.com/cjacker/wchlinke-mode-switch
