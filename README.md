@@ -31,9 +31,10 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 # Hardware prerequist
 
 * A CH32V board or WCH CH5xx RISC-V BLE board
-* A 'WCH-LINK' or 'WCH-LINKE' adapter
-  - only 'WCH-LINKE' support programming CH32V003 with 1-wire SDI interface.
-  - 'WCH-LINK' / 'WCH-LINKE' USB adapter usually support dual modes (SWD for ARM and RVSWD for CH32V) and can be toggled by jumpers or on-board buttons.
+* A 'WCH-LINKE' adapter (WCH-LINK without E is deprecated)
+  - old 'WCH-LINK' (without E) do not support programming CH32V003 with 1-wire SDI interface.
+  - WCH official utilities will flash a new firmware to 'WCH-LINK' (without E) every time when switch between DAP and RV mode.
+  - The new firmware do not support using on-board button to toggle 'WCH-LINK' (without E) mode anymore.
 
 # Toolchain overview
 
@@ -205,7 +206,7 @@ There is 2 way to programming a CH32V MCU: ISP and RVSWD.
 
 ## ISP programming
 
-ISP programming doesn't need a WCH-LINK or WCH-LINKE adapter, you can connect the board directly to PC USB port.
+ISP programming doesn't need a WCH-LINKE adapter, it program the target device via USB port directly.
 
 The best opensource WCH ISP tool is [wchisp](https://github.com/ch32-rs/wchisp), which support more parts than other solutions, it is written in rust lang.
 
@@ -218,7 +219,7 @@ cargo build --release
 sudo install -m0755 target/release/wchisp /usr/bin/wchisp
 ```
 
-A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, you can have a try yourself.
+
 
 **Programming:**
 
@@ -238,22 +239,24 @@ Then
 After enter ISP mode, take above blink example as demo (change the LED port according to your board), the programming process as below:
 
 ```
-sudo wchisp flash build/CH32V.bin
+sudo wchisp flash build/ch32v.bin
 ```
 
 You may need to press 'RESET' button to reset the board after programming.
 
+A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, you can have a try yourself.
+
 ## OpenOCD programming and debugging
 
-CH32V do NOT support JTAG/SWD programming / debugging interface, it had implemented a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named SDI for CH32V003. 
+CH32V do NOT support JTAG/SWD programming / debugging interface, You can not use SWD/JTAG usb adapters to program/debug CH32V. It had a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named 'SDI' for CH32V003. 
 
-You can not use SWD/JTAG usb adapters to program/debug CH32V. and these proprietary interfaces also can not be supported by upstream OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
+And these proprietary interfaces also can not be supported by upstream OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
 
-You have to prepare a 'WCH-LINK' or 'WCH-LINKE'(to program CH32V003) usb adapter and build a forked version OpenOCD with 'wlink' interface enabled.
+You have to prepare a 'WCH-LINKE' usb adapter and build a forked version OpenOCD with 'wlink' interface enabled.
 
 **Build and Install WCH OpenOCD:**
 
-If you choose to use MRS prebuilt toolchain and WCH OpenOCD for Linux (as mention in Compiler section), you can ignore the building process.
+If you choose to use MRS prebuilt toolchain and WCH OpenOCD for Linux (as mention in Compiler section), just ignore the building process.
 
 ```
 git clone https://github.com/karlp/openocd-hacks/
@@ -268,7 +271,7 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 **Programming:**
 
-Please wire up you 'WCH-LINK' or 'WCH-LINKE' usb adapter with your development board (as same as SWD) and use 'wch-riscv.cfg' (for MRS Toolchain) provide in this repo. For CH32V003, you must prepare a 'WCH-LINK' with 'E' adapter and only the SWDIO(PD1) pin is needed.
+Please wire up 'WCH-LINKE' adapter with your development board (pins as same as SWD) and use 'wch-riscv.cfg' (from MRS Toolchain) provide in this repo. For CH32V003, only the 'PD1 / SWDIO' pin is needed.
 
 ```
 # erase all
