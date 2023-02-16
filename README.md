@@ -26,6 +26,11 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 - [Flashing and Debugging](https://github.com/cjacker/opensource-toolchain-ch32v#flashing-and-debugging)
   + [ISP programming](https://github.com/cjacker/opensource-toolchain-ch32v#isp-programming)
   + [OpenOCD programming and debugging](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming-and-debugging)
+- [Project templates](https://github.com/cjacker/opensource-toolchain-ch32v/edit/main/README.md#project-templates)
+  + ch32v003evt
+  + ch32v103evt
+  + ch32v20xevt
+  + ch32v307evt
 - [How to switch between dual modes of WCH-LinkE](https://github.com/cjacker/opensource-toolchain-ch32v/blob/main/README.md#how-to-switch-modes-of-wch-linke)
 
 # Hardware prerequist
@@ -129,50 +134,23 @@ For ch571/573, https://www.wch.cn/downloads/CH573EVT_ZIP.html
 
 For ch581/582/583, https://www.wch.cn/downloads/CH583EVT_ZIP.html
 
-These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, in this repo, here provide a simple script and a Makefile template to help you convert it. 
+These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, I provide [a project template and convertor](https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template) to convert EVT package to makefile project.
 
-## For CH32V 
+## For CH32V EVT Packages
 
 After 'CH32VxxxEVT.ZIP' downloaded, the conversion process as below:
 
 ```
-git clone https://github.com/cjacker/opensource-toolchain-ch32v.git
-cd opensource-toolchain-ch32v
-mkdir evt
-unzip CH32VxxxEVT.ZIP -d evt
-# copy core sdk to project_template dir
-cp -r evt/EVT/EXAM/SRC/* project_template
-# take some codes from GPIO_Toggle demo.
-cp -r evt/EVT/EXAM/GPIO/GPIO_Toggle/User project_template
-
-cd project_template
-# replace it with our blink demo
-rm -f User/main.c
-mv main.c User/
-# clean up
-rm -rf evt
-
-# if ch32v103 bluepill, run
-./generate_makefile bluepill103
-
-# if ch32v203g6 flappyboard, run
-./generate_makefile flappyboard203
-
-# if ch32v003, run
-./generate_makefile ch32v003
+git clone https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template
+cd ch32v_evt_makefile_gcc_project_template
+./generate_project_from_evt.sh <part>
 ```
+the '<part>' can be obtained with running `./generate_project_from_evt.sh` without any args.
 
-Before type `make' to build the project, you need to:
-
-* ensure choosing the correct 'Startup' asm file.
-* ensure the RAM/FLASH settings in `Ld/Link.ld` is correct.
-* edit 'User/main.c' to setup correct GPIO port.
-
-For example, for [flappyboard](https://github.com/metro94/FlappyBoard) with CH32V203G6, you should use `Startup/startup_ch32v20x_D6.S` and the 'MEMORY' section in 'Link.ld' also need to be modified. All these changes had been done in `generate_makefile` script, if it is not suite for your MCU model, please modify it to match your MCU model.
 
 Then type `make` to build the project.
 
-After building complete, you will get 'build/CH32V.elf', 'build/CH32V.hex' and 'build/CH32V.bin', which can be used for debugging and programming later.
+After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and `build/part.bin`, which can be used for debugging and programming later.
 
 
 ## For CH5XX RISC-V BLE
@@ -305,6 +283,46 @@ Start address 0x00000000, load size 8928
 Transfer rate: 3 KB/sec, 2232 bytes/write.
 (gdb)
 ```
+
+# Project templates
+The pre-converted project templates from WCH official EVT packages and supported parts:
+- [ch32v003evt_gcc_makefile](https://github.com/cjacker/ch32v003evt_gcc_makefile)
+  + ch32v003j4m6
+  + ch32v003a4m6
+  + ch32v003f4u6
+  + ch32v003f4p6
+- [ch32v103evt_gcc_makefile](https://github.com/cjacker/ch32v103evt_gcc_makefile)
+  + ch32v103c6t6
+  + ch32v103c8u6
+  + ch32v103c8t6
+  + ch32v103r8t6
+- [ch32v20xevt_gcc_makefile](https://github.com/cjacker/ch32v20xevt_gcc_makefile)
+  + ch32v203f6p6
+  + ch32v203g6u6
+  + ch32v203k6t6
+  + ch32v203c6t6
+  + ch32v203f8p6
+  + ch32v203f8u6
+  + ch32v203g8r6
+  + ch32v203k8t6
+  + ch32v203c8t6
+  + ch32v203c8u6
+  + ch32v203rbt6
+  + ch32v208gbu6
+  + ch32v208cbu6
+  + ch32v208rbt6
+  + ch32v208wbu6
+- [ch32v307evt_gcc_makefile](https://github.com/cjacker/ch32v307evt_gcc_makefile)
+  + ch32v303cbt6
+  + ch32v303rbt6
+  + ch32v303rct6
+  + ch32v303vct6
+  + ch32v305fbp6
+  + ch32v305rbt6
+  + ch32v307rct6
+  + ch32v307wcu6
+  + ch32v307vct6
+
 
 # How to switch modes of WCH-LinkE
 
