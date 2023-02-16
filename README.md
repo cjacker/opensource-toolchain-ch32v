@@ -136,7 +136,7 @@ For ch571/573, https://www.wch.cn/downloads/CH573EVT_ZIP.html
 
 For ch581/582/583, https://www.wch.cn/downloads/CH583EVT_ZIP.html
 
-These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, I provide [a project template and convertor](https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template) to convert EVT package to makefile project.
+These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, here provide [ch32v evt project template and convertor](https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template) and [ch5xx evt project template and convertor](https://github.com/cjacker/ch5xx_riscv_ble_evt_makefile_gcc_project_template) to convert EVT packages to makefile project.
 
 ## For CH32V EVT Packages
 
