@@ -31,6 +31,8 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
   + ch32v103evt
   + ch32v20xevt
   + ch32v307evt
+  + ch573evt
+  + ch583evt
 - [How to switch between dual modes of WCH-LinkE](https://github.com/cjacker/opensource-toolchain-ch32v/blob/main/README.md#how-to-switch-modes-of-wch-linke)
 
 # Hardware prerequist
@@ -138,15 +140,12 @@ These evt source code packages contains core SDK and a lot of demo routines but 
 
 ## For CH32V EVT Packages
 
-After 'CH32VxxxEVT.ZIP' downloaded, the conversion process as below:
-
 ```
 git clone https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template
 cd ch32v_evt_makefile_gcc_project_template
 ./generate_project_from_evt.sh <part>
 ```
 the '<part>' can be obtained with running `./generate_project_from_evt.sh` without any args.
-
 
 Then type `make` to build the project.
 
@@ -155,28 +154,21 @@ After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and
 
 ## For CH5XX RISC-V BLE
 
-After 'CH573EVT.ZIP' or 'CH583EVT.ZIP' downloaded, the conversion process as below:
-
 ```
-git clone https://github.com/cjacker/opensource-toolchain-ch32v.git
-cd opensource-toolchain-ch32v
-mkdir evt
-unzip CH5xxEVT.ZIP -d evt
-# copy core sdk to project_template_ble_ch5xx dir
-cp -r evt/EVT/EXAM/SRC/* project_template_ble_ch5xx
-
-cd project_template_ble_ch5xx
-
-./generate_makefile [ch571|ch573|ch581|ch582|ch583]
+git clone https://github.com/cjacker/ch5xx_riscv_ble_evt_makefile_gcc_project_template
+cd ch5xx_riscv_ble_evt_makefile_gcc_project_template
+./generate_project_from_evt.sh <part>
 ```
+
+the '<part>' can be obtained with running `./generate_project_from_evt.sh` without any args.
 
 Then type `make` to build the project.
 
-After building complete, you will get 'build/ch5xx_ble.elf', 'build/ch5xx_ble.hex' and 'build/ch5xx_ble.bin', which can be used for debugging and programming later.
+After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and `build/part.bin`, which can be used for debugging and programming later.
 
-**Note 1:** This demo only blink LED connect to PA8.
+**Note 1:** These demo only blink LED connect to PA8.
 
-**Note 2:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, the static library named 'libISP573.a' and 'libISP583.a' is provided in binary format.
+**Note 2:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, the static library named 'libISP573.a' and 'libISP583.a' is in binary format.
 
 # Flashing and Debugging
 
@@ -322,7 +314,13 @@ The pre-converted project templates from WCH official EVT packages and supported
   + ch32v307rct6
   + ch32v307wcu6
   + ch32v307vct6
-
+- [ch573evt](https://github.com/cjacker/ch573evt_gcc_makefile)
+  + ch573
+  + ch571
+- [ch583evt](https://github.com/cjacker/ch583evt_gcc_makefile)
+  + ch583
+  + ch582
+  + ch581
 
 # How to switch modes of WCH-LinkE
 
