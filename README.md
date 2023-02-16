@@ -145,7 +145,7 @@ git clone https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template
 cd ch32v_evt_makefile_gcc_project_template
 ./generate_project_from_evt.sh <part>
 ```
-the '<part>' can be obtained with running `./generate_project_from_evt.sh` without any args.
+the `<part>` can be obtained with running `./generate_project_from_evt.sh` without any args.
 
 Then type `make` to build the project.
 
@@ -160,7 +160,7 @@ cd ch5xx_riscv_ble_evt_makefile_gcc_project_template
 ./generate_project_from_evt.sh <part>
 ```
 
-the '<part>' can be obtained with running `./generate_project_from_evt.sh` without any args.
+the `<part>` can be obtained with running `./generate_project_from_evt.sh` without any args.
 
 Then type `make` to build the project.
 
@@ -188,8 +188,6 @@ cd wchisp
 cargo build --release
 sudo install -m0755 target/release/wchisp /usr/bin/wchisp
 ```
-
-
 
 **Programming:**
 
