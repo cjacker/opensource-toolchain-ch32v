@@ -1,5 +1,0 @@
-1. Please modify Ld/Link.ld to setup RAM/FLASH size correctly.
-2. Please modify Makefile to choose correct startup asm file
-   - for 303, startup_ch32v30x_D8.S
-   - for 305-307, startup_ch32v30x_D8C.S
-3. connect a LED to PA0, for EVB board, connect PA0 to LED1 or LED2 

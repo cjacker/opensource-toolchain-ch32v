@@ -1,3 +1,0 @@
-1. Please modify Ld/Link.ld to setup RAM/FLASH size correctly.
-2. Please modify Makefile to choose correct startup asm file
-3. connect a LED to PB8
