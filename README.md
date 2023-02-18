@@ -25,7 +25,7 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
   + [For CH5XX RISC-V BLE](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch5xx-risc-v-ble)
 - [Programming](https://github.com/cjacker/opensource-toolchain-ch32v#programming)
   + [ISP programming](https://github.com/cjacker/opensource-toolchain-ch32v#isp-programming)
-  + [OpenOCD programming and debugging](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming)
+  + [OpenOCD programming](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming)
 - [Debugging](https://github.com/cjacker/opensource-toolchain-ch32v#debugging)
 - [Project templates](https://github.com/cjacker/opensource-toolchain-ch32v/edit/main/README.md#project-templates)
   + ch32v003evt
