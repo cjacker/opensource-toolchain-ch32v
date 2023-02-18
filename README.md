@@ -23,9 +23,10 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 - [SDK](https://github.com/cjacker/opensource-toolchain-ch32v#sdk)
   + [For CH32V](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch32v)
   + [For CH5XX RISC-V BLE](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch5xx-risc-v-ble)
-- [Flashing and Debugging](https://github.com/cjacker/opensource-toolchain-ch32v#flashing-and-debugging)
+- [Programming](https://github.com/cjacker/opensource-toolchain-ch32v#programming)
   + [ISP programming](https://github.com/cjacker/opensource-toolchain-ch32v#isp-programming)
-  + [OpenOCD programming and debugging](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming-and-debugging)
+  + [OpenOCD programming and debugging](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming)
+- [Debugging](https://github.com/cjacker/opensource-toolchain-ch32v#debugging)
 - [Project templates](https://github.com/cjacker/opensource-toolchain-ch32v/edit/main/README.md#project-templates)
   + ch32v003evt
   + ch32v103evt
@@ -170,7 +171,7 @@ After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and
 
 **Note 2:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, the static library named 'libISP573.a' and 'libISP583.a' is in binary format.
 
-# Flashing and Debugging
+# Programming
 
 There is 2 way to programming a CH32V MCU: ISP and RVSWD.
 
@@ -214,9 +215,9 @@ You may need to press 'RESET' button to reset the board after programming.
 
 A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, you can have a try yourself.
 
-## OpenOCD programming and debugging
+## OpenOCD programming
 
-CH32V do NOT support JTAG/SWD programming / debugging interface, You can not use SWD/JTAG usb adapters to program/debug CH32V. It had a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named 'SDI' for CH32V003. 
+CH32V do NOT support JTAG and SWD programming / debugging interface, You can not use SWD/JTAG usb adapters to program/debug CH32V. It had a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named 'SDI' for CH32V003. 
 
 And these proprietary interfaces also can not be supported by upstream OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
 
@@ -254,11 +255,14 @@ sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c wlink_reset_resume    -c ex
 
 For all makefile demos in this repo, you can use 'make program' to program the target device.
 
-**Debugging**
+# Debugging
 
+Launch OpenOcd to connect to the target device:
 ```
 sudo openocd -f wch-riscv.cfg
-# open another term
+```
+Open another terminal and run:
+```
 riscv-none-embed-gdb ./build/ch32v103.elf
 (gdb) target remote :3333
 Remote debugging using :3333
