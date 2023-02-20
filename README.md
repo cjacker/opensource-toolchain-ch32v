@@ -41,8 +41,8 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 * A CH32V board or WCH CH5xx RISC-V BLE board
 * A 'WCH-LINKE' adapter (WCH-LINK without E is deprecated)
   - old 'WCH-LINK' (without E) do not support programming CH32V003 with 1-wire SDI interface.
-  - WCH official utilities will flash a new firmware to 'WCH-LINK' (without E) every time when switch between DAP and RV mode.
-  - The new firmware do not support using on-board button to toggle 'WCH-LINK' (without E) mode anymore.
+  - WCH official utilities will flash a new firmware to old 'WCH-LINK' (without E) every time when switch between DAP and RV mode.
+  - The new firmware do not support using on-board button to toggle old 'WCH-LINK' (without E) mode anymore. (DO NOT update firmware of old WCH-LINK adapter).
 
 # Toolchain overview
 
