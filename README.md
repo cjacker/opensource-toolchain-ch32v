@@ -137,7 +137,7 @@ For ch571/573, https://www.wch.cn/downloads/CH573EVT_ZIP.html
 
 For ch581/582/583, https://www.wch.cn/downloads/CH583EVT_ZIP.html
 
-These evt source code packages contains core SDK and a lot of demo routines but lack Makefile support, here provide [ch32v evt project template and convertor](https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template) and [ch5xx evt project template and convertor](https://github.com/cjacker/ch5xx_riscv_ble_evt_makefile_gcc_project_template) to convert EVT packages to makefile project.
+These evt packages contains core SDK and a lot of demo routines but lack Makefile support, here provide [ch32v evt project template and convertor](https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template) and [ch5xx evt project template and convertor](https://github.com/cjacker/ch5xx_riscv_ble_evt_makefile_gcc_project_template) to convert EVT packages to makefile project.
 
 ## For CH32V EVT Packages
 
@@ -245,12 +245,12 @@ Please wire up 'WCH-LINKE' adapter with your development board (pins as same as 
 ```
 # erase all
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "flash erase_sector wch_riscv 0 last " -c exit
-# program
-sudo wch-openocd -f wch-riscv.cfg  -c init -c halt  -c "program xxx.hex\bin\elf "  -c exit
+# program and verify
+sudo wch-openocd -f wch-riscv.cfg  -c init -c halt  -c "program xxx.hex\bin\elf verify" -c exit
 # verify
-sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "verify_image xxx.hex\bin\elf"    -c exit
+sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "verify_image xxx.hex\bin\elf" -c exit
 # reset/resume
-sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c wlink_reset_resume    -c exit
+sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "wlink_reset_resume" -c exit
 ```
 
 For all makefile demos in this repo, you can use 'make program' to program the target device.
@@ -277,6 +277,8 @@ Start address 0x00000000, load size 8928
 Transfer rate: 3 KB/sec, 2232 bytes/write.
 (gdb)
 ```
+
+Then you can set breakpoints, run, step, continue as usual gdb.
 
 # Project templates
 The pre-converted project templates from WCH official EVT packages and supported parts:
