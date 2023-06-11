@@ -12,7 +12,7 @@ When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was intro
 
 This OpenOCD fork (https://github.com/karlp/openocd-hacks/) can support the 1-wire interface.
 
-There is also the STM32F103C8T6-based https://github.com/NgoHungCuong/1-Wire-CH32V003
+There is also the STM32F103C8T6-based https://github.com/NgoHungCuong/1-Wire-CH32V003 for debugging, and https://github.com/NgoHungCuong/NHC-Link042 for flashing.
 
 
 By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core microcontroller integrated with BLE wireless communication, these parts also covered by this tutorial.
