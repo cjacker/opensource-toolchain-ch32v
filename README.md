@@ -43,10 +43,8 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 # Hardware prerequist
 
 * A CH32V board or WCH CH5xx RISC-V BLE board
-* A 'WCH-LINKE' adapter (WCH-LINK without E is deprecated)
-  - old 'WCH-LINK' (without E) do not support programming CH32V003 with 1-wire SDI interface.
-  - WCH official utilities will flash a new firmware to old 'WCH-LINK' (without E) every time when switch between DAP and RV mode.
-  - The new firmware do not support using on-board button to toggle old 'WCH-LINK' (without E) mode anymore. (DO NOT update firmware of old WCH-LINK adapter).
+* A 'WCH-LINKE' adapter
+  - old 'WCH-LINK' (without E) do NOT support programming CH32V003.
 
 # Toolchain overview
 
@@ -90,9 +88,7 @@ export PATH=/opt/riscv-gnu-toolchain/bin:$PATH
 
 ## Use prebuilt toolchain
 
-#### Xpack riscv toolchain
-
-[xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/) provde a prebuilt toolchain for riscv. you can download it from https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/. The lastest version is '14.2.0', Download and extract it:
+[xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/) provde a prebuilt toolchain for riscv. you can download it from https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/. The lastest version is '14.2.0', download and extract it as:
 
 ```
 sudo mkdir -p /opt/xpack-riscv-toolchain
@@ -153,11 +149,9 @@ After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and
 
 **Note 1:** These demo only blink LED connect to PA8.
 
-**Note 2:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, the static library named 'libISP573.a' and 'libISP583.a' is in binary format.
+**Note 2:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, there is no sources of static library 'libISP573.a' and 'libISP583.a'.
 
 # Programming
-
-There is 2 way to programming a CH32V MCU: ISP and RVSWD.
 
 ## ISP programming
 
@@ -165,7 +159,7 @@ ISP programming doesn't need a WCH-LINKE adapter, it program the target device v
 
 WCH officially provides `WCHISPTool_CMD` tool, it is close-source but prebuilt for windows/macosx/linux platform and support various archs such as x64/mips64/aarch64 etc., you can download it from [wch official website](https://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html).
 
-The best opensource WCH ISP tool is [wchisp](https://github.com/ch32-rs/wchisp), which support more parts than other solutions, it is written in rust lang.
+The best opensource WCH ISP tool is [wchisp](https://github.com/ch32-rs/wchisp), which support more parts than other opensource solutions.
 
 **Installation:**
 
@@ -199,13 +193,13 @@ sudo wchisp flash build/ch32v.bin
 
 You may need to press 'RESET' button to reset the board after programming.
 
-A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, you can have a try yourself.
+A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, please have a try yourself.
 
 ## OpenOCD programming
 
-CH32V do NOT support JTAG and SWD programming / debugging interface, You can not use SWD/JTAG usb adapters to program/debug CH32V. It had a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named 'SDI' for CH32V003. 
+CH32V do NOT support JTAG and SWD programming / debugging interface, You can not use SWD/JTAG usb adapters to program or debug CH32V. It had a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named 'SDI' for CH32V003. 
 
-And these proprietary interfaces also can not be supported by upstream OpenOCD (up to now, the changes WCH made to OpenOCD is not upstreamed).
+And these proprietary interfaces also can not be supported by upstream OpenOCD (up to v0.12, the changes WCH made to OpenOCD is not upstreamed).
 
 You have to prepare a 'WCH-LINKE' usb adapter and build a forked version OpenOCD with 'wlink' interface enabled.
 
