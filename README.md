@@ -23,7 +23,6 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 - [RISC-V GNU Toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#risc-v-gnu-toolchain)
   + [Building from source](https://github.com/cjacker/opensource-toolchain-ch32v#building-from-source)
   + [Use prebuilt toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#use-prebuilt-toolchain)
-    - [MounRiver studio toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#mounriver-studio-toolchain)
     - [Xpack riscv toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#xpack-riscv-toolchain)
 - [SDK](https://github.com/cjacker/opensource-toolchain-ch32v#sdk)
   + [For CH32V](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch32v)
@@ -90,42 +89,18 @@ export PATH=/opt/riscv-gnu-toolchain/bin:$PATH
 
 ## Use prebuilt toolchain
 
-There are a lot of prebuilt riscv toolchains, Here are two choices with well support.
-
-### MounRiver studio toolchain
-
-MounRiver provide a prebuilt toolchain for linux, you can download it from [MounRiver Studio website](http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.60.tar.xz). up to this tutorial written, the lastest version is "MRS_Toolchain_Linux_x64_V1.60.tar.xz", it include a prebuilt gnu toolchain (gcc 8.2.0) and prebuilt openocd with RVSWD and SDI support.
-
-After download and extract it to somewhere, Please change the toolchain's bad dir name:
-
-```
-sudo mkdir -p /opt/mrs-riscv-toolchain
-sudo tar xf MRS_Toolchain_Linux_x64_V1.60.tar.xz -C /opt/mrs-riscv-toolchain --strip-components=1 
-# correct the dir name with space
-sudo mv /opt/mrs-riscv-toolchain/"RISC-V Embedded GCC" /opt/mrs-riscv-toolchain/risv-none-embed-gcc
-```
-
-And add `/opt/mrs-riscv-toolchain/riscv-none-embed-gcc/bin` to PATH env according to your shell.
-
-You also need add `/opt/mrs-riscv-toolchain/OpenOCD/bin` to PATH env if you want to use this prebuilt OpenOCD.
-
-**NOTE**, the target triplet of mrs riscv toolchain is **`riscv-none-embed`**.
-
 #### Xpack riscv toolchain
 
-[xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack) provde a prebuilt toolchain for riscv. you can download it from [here](https://github.com/xpack-dev-tools/riscv-none-embed-gcc-xpack). although the riscv-none-embed-gcc-xpack had been marked as deprecated, but you'd better stay with riscv gcc v10.2 due to the riscv '-march' changes happened in gcc v12.0 and above.
-
-After download:
+[xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/) provde a prebuilt toolchain for riscv. you can download it from https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/. The lastest version is '14.2.0', Download and extract it:
 
 ```
 sudo mkdir -p /opt/xpack-riscv-toolchain
-sudo tar xf xpack-riscv-none-embed-gcc-10.2.0-1.2-linux-x64.tar.gz -C /opt/xpack-riscv-toolchain --strip-components=1
+sudo tar xf xpack-riscv-none-elf-gcc-14.2.0-2-linux-x64.tar.gz -C /opt/xpack-riscv-toolchain --strip-components=1
 ```
 
-and add `/opt/xpack-riscv-toolchain/bin` to PATH env according to your shell.
+And add `/opt/xpack-riscv-toolchain/bin` to PATH env according to your shell.
 
-**NOTE**, the triplet of xpack prebuilt toolchain is **`riscv-none-embed`**.
-
+**NOTE**, the target triplet of xpack riscv toolchain is **`riscv-none-elf`**.
 
 # SDK
 
@@ -235,7 +210,7 @@ You have to prepare a 'WCH-LINKE' usb adapter and build a forked version OpenOCD
 
 **Build and Install WCH OpenOCD:**
 
-If you choose to use MRS prebuilt toolchain and WCH OpenOCD for Linux (as mention in Compiler section), just ignore the building process.
+OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use third-party fork now:
 
 ```
 git clone https://github.com/karlp/openocd-hacks/
