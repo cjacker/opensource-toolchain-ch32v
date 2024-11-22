@@ -79,6 +79,7 @@ cd build
 make -j<nprocs>
 make install
 ```
+**NOTE**, for ch32v003, you should build gcc with `--with-abi=ilp32e --with-arch=rv32ec_zicsr`.
 
 It will be installed to "/opt/riscv-gnu-toolchain" dir, and the [target triplet](https://wiki.osdev.org/Target_Triplet) of gcc should be 'riscv32-unknown-elf-'.
 
@@ -100,7 +101,7 @@ sudo tar xf xpack-riscv-none-elf-gcc-14.2.0-2-linux-x64.tar.gz -C /opt/xpack-ris
 
 And add `/opt/xpack-riscv-toolchain/bin` to PATH env according to your shell.
 
-**NOTE**, the target triplet of xpack riscv toolchain is **`riscv-none-elf`**.
+**NOTE**, the target triplet of xpack riscv toolchain is **`riscv-none-elf`** and it can support ch32v003 development.
 
 # SDK
 
