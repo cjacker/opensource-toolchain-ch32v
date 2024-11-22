@@ -54,7 +54,10 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 * Compiler: gcc
 * Debugger: openocd/gdb
 * SDK: official EVT source package
-* Programmer: ch55xtool for ISP mode / openocd for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
+* Programmer:
+  - official WCHISPTool_CMD for ISP mode (close source)
+  - wchisp for ISP mode
+  - openocd for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
 
 # RISC-V GNU Toolchain
 
@@ -183,6 +186,8 @@ There is 2 way to programming a CH32V MCU: ISP and RVSWD.
 ## ISP programming
 
 ISP programming doesn't need a WCH-LINKE adapter, it program the target device via USB port directly.
+
+WCH officially provides `WCHISPTool_CMD` tool, it is close-source but prebuilt for windows/macosx/linux platform and support various archs such as x64/mips64/aarch64 etc., you can download it from [wch official website](https://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html).
 
 The best opensource WCH ISP tool is [wchisp](https://github.com/ch32-rs/wchisp), which support more parts than other solutions, it is written in rust lang.
 
@@ -332,6 +337,8 @@ The pre-converted project templates from WCH official EVT packages and supported
   + ch581
 
 # How to switch modes of WCH-LinkE
+
+**deprecated, [wlink](https://github.com/ch32-rs/wlink) already support mode switch, please consider to use wlink instead.**
 
 Usually, there are buttons on WCH-LinkE adapter, hold the 'mode' button download and plugin, it will switch to another mode.
 
