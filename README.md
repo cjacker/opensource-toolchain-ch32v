@@ -6,14 +6,13 @@ If you want to learn more about it, please refer to http://www.wch-ic.com/produc
 
 CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-LINK' or 'WCH-LINKE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
 
-At first, the WCH forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Recently (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch).
+At first, the WCH forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Later (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch), but no update after that.
 
-When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LINKE' adapter instead old 'WCH-LINK', 'WCH-LINK'(without E) adapter can not support this 1-wire debugging interface.
+When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LINKE' adapter instead old 'WCH-LINK', 'WCH-LINK'(without E) adapter can not support this 1-wire debugging interface and the sources of old version WCH forked OpenOCD seems not work anymore.
 
-This OpenOCD fork (https://github.com/karlp/openocd-hacks/) can support the 1-wire interface.
+Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface.
 
 There is also the STM32F103C8T6-based https://github.com/NgoHungCuong/1-Wire-CH32V003 for debugging, and https://github.com/NgoHungCuong/NHC-Link042 for flashing.
-
 
 By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core microcontroller integrated with BLE wireless communication, these parts also covered by this tutorial.
 
@@ -205,12 +204,16 @@ You have to prepare a 'WCH-LINKE' usb adapter and build a forked version OpenOCD
 
 **Build and Install WCH OpenOCD:**
 
-OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use third-party fork now:
+Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use [third-party fork](https://github.com/karlp/openocd-hacks/) now, or use the patch I provide in this repo for latest version of OpenOCD:
 
 ```
-git clone https://github.com/karlp/openocd-hacks/
-cd openocd-hacks
+git clone https://github.com/openocd-org/openocd.git
+cd openocd
 git submodule update --init --progress
+git checkout 8a3723022689dd078c3e61268615616d5566fc94
+
+cat openocd-0.12-dev-8a3723022689dd078c3e61268615616d5566fc94-enable-wlink.patch|patch -p1
+
 ./configure --prefix=/opt/wch-openocd --program-prefix=wch- --enable-wlink
 make
 sudo make install
@@ -221,6 +224,8 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 **Programming:**
 
 Please wire up 'WCH-LINKE' adapter with your development board (pins as same as SWD) and use 'wch-riscv.cfg' (from MRS Toolchain) provide in this repo. For CH32V003, only the 'PD1 / SWDIO' pin is needed.
+
+Actually, the 'wch-riscv.cfg' is a combination of 'scripts/interface/wlink.cfg' and 'scripts/target/wch-riscv.cfg' of the patched OpenOCD, you can also use these two config files.
 
 ```
 # erase all
