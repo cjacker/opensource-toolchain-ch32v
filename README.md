@@ -1,8 +1,6 @@
 # Opensource toolchain for WCH CH32V RISC-V 32bit MCU
 
-WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU based on QingKe core.
-
-If you want to learn more about it, please refer to http://www.wch-ic.com/products/categories/47.html?pid=5.
+WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer to [official website](http://www.wch-ic.com/products/categories/47.html?pid=5) for more infomations.
 
 # Table of contents
 - [Hardware prerequist](https://github.com/cjacker/opensource-toolchain-ch32v#hardware-prerequist)
@@ -31,19 +29,21 @@ If you want to learn more about it, please refer to http://www.wch-ic.com/produc
 * A CH32V board or WCH CH5xx RISC-V BLE board
 * A 'WCH-LinkE' adapter
   - either WCH-LinkE r0-1v2 or 1v3 supported by my forked openocd.
-  - future version of WCH-LinkE may be supported.
-  - old WCH-Link (without E) adapter do NOT support programming CH32V003.
+  - future version of WCH-LinkE may also be supported.
+  - old WCH-Link (without E) adapter can NOT program CH32V003 series.
+
+WCH have an official online store on AliExpress, you can buy EVT board and WCH-LinkE adapter from it.
 
 # Toolchain overview
 
 * Compiler: gcc
-* Debugger: openocd/gdb
-* SDK: official EVT source package
+* SDK: WCH official EVT source package
 * Programmer:
-  - patched OpenOCD for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
-    * wlink to switch WCH-LinkE adapter to RV mode.
-  - official WCHISPTool_CMD for ISP mode (close source)
-  - wchisp for ISP mode
+  - [patched OpenOCD](https://github.com/cjacker/wch-openocd) for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
+    * [wlink](https://github.com/ch32-rs/wlink) to switch WCH-LinkE adapter to RV mode.
+  - official [WCHISPTool_CMD](http://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html) for ISP mode (close source)
+  - [wchisp](https://github.com/ch32-rs/wchisp) for ISP mode
+* Debugger: patched OpenOCD and gdb
 
 # RISC-V GNU Toolchain
 
@@ -146,7 +146,7 @@ After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and
 
 ISP programming doesn't need a WCH-LinkE adapter, it program the target device via USB port directly.
 
-WCH officially provides `WCHISPTool_CMD` tool, it is close-source but prebuilt for windows/macosx/linux platform and support various archs such as x64/mips64/aarch64 etc., you can download it from [wch official website](https://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html).
+WCH officially provides `WCHISPTool_CMD` tool, it is close-source but provide prebuilt cli binaries for windows/macosx/linux platform, you can download it from [wch official website](https://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html).
 
 The best opensource WCH ISP tool is [wchisp](https://github.com/ch32-rs/wchisp), which support more parts than other opensource solutions.
 
@@ -200,7 +200,7 @@ You have to prepare a 'WCH-LinkE' usb adapter and build my forked OpenOCD with '
 
 **Build and Install WCH OpenOCD:**
 
-Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use [my forked OpenOCD](https://github.com/cjacker/wch-openocd) now, or use the patch I provide in this repo for latest version of OpenOCD, both WCH-LinkE r0 1v2 and r0 1v3 can be supported:
+Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12, you have to use [my forked OpenOCD](https://github.com/cjacker/wch-openocd) now, or use the patch I provide in this repo for latest version of OpenOCD, both WCH-LinkE r0 1v2 and r0 1v3 can be supported:
 
 ```
 git clone https://github.com/cjacker/wch-openocd
@@ -219,12 +219,13 @@ If you want to patch upstream OpenOCD your self:
 git clone https://github.com/cjacker/wch-openocd
 git diff 133dd9d669e5b8beb7c7787b0be677621808e72d > openocd-0.12-dev-enable-wch-linke.patch
 ```
+
 You will get a patch based on upstream OpenOCD commit 133dd9d669e5b8beb7c7787b0be677621808e72d.
 
 
 **Programming:**
 
-Please wire up 'WCH-LinkE' adapter with your development board (pins as same as SWD) and use 'wch-riscv.cfg' (from MRS Toolchain) provide in this repo. For CH32V003, only the 'PD1 / SWDIO' pin is needed.
+Please wire up 'WCH-LinkE' adapter with your development board (pins as same as SWD) and use 'wch-riscv.cfg' (from MRS Toolchain) provide in this repo. For CH32V003, only 'PD1 / SWDIO' pin is needed.
 
 Since WCH-LinkE support RV/DAP dual mode, please make sure your WCH-LinkE adapter is in RV mode, you can use [wlink](https://github.com/ch32-rs/wlink) to switch mode of WCH-LinkE, to switch to RV mode:
 ```
