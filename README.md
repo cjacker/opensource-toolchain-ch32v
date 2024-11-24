@@ -4,11 +4,11 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU based on QingKe
 
 If you want to learn more about it, please refer to http://www.wch-ic.com/products/categories/47.html?pid=5.
 
-CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-LINK' or 'WCH-LINKE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
+CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-Link' or 'WCH-LinkE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
 
 At first, the WCH forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Later (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch), but no update after that.
 
-When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LINKE' adapter instead old 'WCH-LINK', 'WCH-LINK'(without E) adapter can not support this 1-wire debugging interface and the sources of old version WCH forked OpenOCD seems not work anymore.
+When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the sources of old version WCH forked OpenOCD seems not work anymore.
 
 Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface.
 
@@ -37,7 +37,6 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
   + ch32v307evt
   + ch573evt
   + ch583evt
-- [How to switch between dual modes of WCH-LinkE](https://github.com/cjacker/opensource-toolchain-ch32v/blob/main/README.md#how-to-switch-modes-of-wch-linke)
 
 # Hardware prerequist
 
@@ -45,7 +44,7 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 * A 'WCH-LinkE' adapter
   - either WCH-LinkE r0 1v2 or 1v3 supported by patched openocd in this repo.
   - future version should be supported but waiting for test.
-  - old 'WCH-LINK' (without E) do NOT support programming CH32V003.
+  - old 'WCH-Link' (without E) do NOT support programming CH32V003.
 
 # Toolchain overview
 
@@ -53,9 +52,10 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 * Debugger: openocd/gdb
 * SDK: official EVT source package
 * Programmer:
+  - openocd for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
+    * wlink to switch WCH-LinkE adapter to RV mode.
   - official WCHISPTool_CMD for ISP mode (close source)
   - wchisp for ISP mode
-  - openocd for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
 
 # RISC-V GNU Toolchain
 
@@ -156,7 +156,7 @@ After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and
 
 ## ISP programming
 
-ISP programming doesn't need a WCH-LINKE adapter, it program the target device via USB port directly.
+ISP programming doesn't need a WCH-LinkE adapter, it program the target device via USB port directly.
 
 WCH officially provides `WCHISPTool_CMD` tool, it is close-source but prebuilt for windows/macosx/linux platform and support various archs such as x64/mips64/aarch64 etc., you can download it from [wch official website](https://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html).
 
@@ -202,7 +202,7 @@ CH32V do NOT support JTAG and SWD programming / debugging interface, You can not
 
 And these proprietary interfaces also can not be supported by upstream OpenOCD (up to v0.12, the changes WCH made to OpenOCD is not upstreamed).
 
-You have to prepare a 'WCH-LINKE' usb adapter and build a forked version OpenOCD with 'wlink' interface enabled.
+You have to prepare a 'WCH-LinkE' usb adapter and build a forked version OpenOCD with 'wlink' interface enabled.
 
 **Build and Install WCH OpenOCD:**
 
@@ -225,22 +225,29 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 **Programming:**
 
-Please wire up 'WCH-LINKE' adapter with your development board (pins as same as SWD) and use 'wch-riscv.cfg' (from MRS Toolchain) provide in this repo. For CH32V003, only the 'PD1 / SWDIO' pin is needed.
+Please wire up 'WCH-LinkE' adapter with your development board (pins as same as SWD) and use 'wch-riscv.cfg' (from MRS Toolchain) provide in this repo. For CH32V003, only the 'PD1 / SWDIO' pin is needed.
 
-Actually, the 'wch-riscv.cfg' is a combination of 'scripts/interface/wlink.cfg' and 'scripts/target/wch-riscv.cfg' of the patched OpenOCD, you can also use these two config files.
+Since WCH-LinkE support RV/DAP dual mode, please make sure your WCH-LinkE adapter is in RV mode, you can use [wlink](https://github.com/ch32-rs/wlink) to switch mode of WCH-LinkE, to switch to RV mode:
+```
+wlink mode-switch --rv
 
 ```
-# erase all
+After switch to RV mode
+
+```
+# to erase all
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "flash erase_sector wch_riscv 0 last " -c exit
-# program and verify
+# to program and verify
 sudo wch-openocd -f wch-riscv.cfg  -c init -c halt  -c "program xxx.hex\bin\elf verify" -c exit
-# verify
+# to verify
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "verify_image xxx.hex\bin\elf" -c exit
-# reset/resume
+# to reset/resume
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "wlink_reset_resume" -c exit
 ```
 
-For all makefile demos in this repo, you can use 'make program' to program the target device.
+Actually, the 'wch-riscv.cfg' is a combination of 'scripts/interface/wlink.cfg' and 'scripts/target/wch-riscv.cfg' of the patched OpenOCD, you can also use these two config files.
+
+For all examples in this repo, you can use 'make program' to program the target device.
 
 # Debugging
 
@@ -312,12 +319,3 @@ The pre-converted project templates from WCH official EVT packages and supported
   + ch583
   + ch582
   + ch581
-
-# How to switch modes of WCH-LinkE
-
-**deprecated, [wlink](https://github.com/ch32-rs/wlink) already support mode switch, please consider to use wlink instead.**
-
-Usually, there are buttons on WCH-LinkE adapter, hold the 'mode' button download and plugin, it will switch to another mode.
-
-WCH-LinkE also support switching modes by software, Please refer to https://github.com/cjacker/wchlinke-mode-switch, a command line tool support switching WCH-LinkE modes between DAP / RV from Host.
-
