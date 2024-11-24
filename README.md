@@ -4,18 +4,6 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU based on QingKe
 
 If you want to learn more about it, please refer to http://www.wch-ic.com/products/categories/47.html?pid=5.
 
-CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-Link' or 'WCH-LinkE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
-
-At first, the WCH forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Later (2022-03), the private forked OpenOCD (ver 0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch), but no update after that.
-
-When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the sources of old version WCH forked OpenOCD seems not work anymore.
-
-Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface.
-
-There is also the STM32F103C8T6-based https://github.com/NgoHungCuong/1-Wire-CH32V003 for debugging, and https://github.com/NgoHungCuong/NHC-Link042 for flashing.
-
-By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core microcontroller integrated with BLE wireless communication, these parts also covered by this tutorial.
-
 # Table of contents
 - [Hardware prerequist](https://github.com/cjacker/opensource-toolchain-ch32v#hardware-prerequist)
 - [Toolchain overview](https://github.com/cjacker/opensource-toolchain-ch32v#toolchain-overview)
@@ -42,9 +30,9 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 
 * A CH32V board or WCH CH5xx RISC-V BLE board
 * A 'WCH-LinkE' adapter
-  - either WCH-LinkE r0 1v2 or 1v3 supported by patched openocd in this repo.
-  - future version should be supported but waiting for test.
-  - old 'WCH-Link' (without E) do NOT support programming CH32V003.
+  - either WCH-LinkE r0-1v2 or 1v3 supported by my forked openocd.
+  - future version of WCH-LinkE may be supported.
+  - old WCH-Link (without E) adapter do NOT support programming CH32V003.
 
 # Toolchain overview
 
@@ -198,30 +186,41 @@ A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also sup
 
 ## OpenOCD programming
 
-CH32V do NOT support JTAG and SWD programming / debugging interface, You can not use SWD/JTAG usb adapters to program or debug CH32V. It had a private interface named 'RVSWD' for CH32V103 and above, and a 1-wire interface named 'SDI' for CH32V003. 
+CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-Link' or 'WCH-LinkE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
 
-And these proprietary interfaces also can not be supported by upstream OpenOCD (up to v0.12, the changes WCH made to OpenOCD is not upstreamed).
+At first, WCH private-forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Later (2022-03), the private-forked OpenOCD (0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch), but no update after that, and it can not support ch32v003 SDI interface.
 
-You have to prepare a 'WCH-LinkE' usb adapter and build a forked version OpenOCD with 'wlink' interface enabled.
+When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the sources of old version WCH private-forked OpenOCD seems not work anymore.
+
+Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface. as reported by some users, it can not support WCH-LinkE r0 1v3.
+
+Thus, I create a [wch-openocd](https://github.com/cjacker/wch-openocd) fork myself, based on recent OpenOCD 0.12 dev, import all changes from [openocd-hacks](https://github.com/karlp/openocd-hacks) to support WCH-LinkE old version (r0 1v2), and add WCH-LinkE r0 1v2 and maybe future version support.
+
+You have to prepare a 'WCH-LinkE' usb adapter and build my forked OpenOCD with 'wlink' interface enabled.
 
 **Build and Install WCH OpenOCD:**
 
 Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use [third-party fork](https://github.com/karlp/openocd-hacks/) now, or use the patch I provide in this repo for latest version of OpenOCD, both WCH-LinkE r0 1v2 and r0 1v3 can be supported:
 
 ```
-git clone https://github.com/openocd-org/openocd.git
-cd openocd
-git submodule update --init --progress
-git checkout 8a3723022689dd078c3e61268615616d5566fc94
-
-cat openocd-0.12-dev-8a3723022689dd078c3e61268615616d5566fc94-enable-wlink.patch|patch -p1
+git clone https://github.com/cjacker/wch-openocd
+cd wch-openocd
 
 ./configure --prefix=/opt/wch-openocd --program-prefix=wch- --enable-wlink
 make
 sudo make install
 ```
-
 After installation finished, add '/opt/wch-openocd/bin' to PATH env.
+
+
+If you want to patch upstream OpenOCD your self:
+
+```
+git clone https://github.com/cjacker/wch-openocd
+git diff 133dd9d669e5b8beb7c7787b0be677621808e72d > openocd-0.12-dev-enable-wch-linke.patch
+```
+You will get a patch based on upstream OpenOCD commit 133dd9d669e5b8beb7c7787b0be677621808e72d.
+
 
 **Programming:**
 
@@ -232,7 +231,9 @@ Since WCH-LinkE support RV/DAP dual mode, please make sure your WCH-LinkE adapte
 wlink mode-switch --rv
 
 ```
+
 After switch to RV mode
+
 
 ```
 # to erase all

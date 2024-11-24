@@ -1,7 +1,8 @@
-diff -Nur openocd/configure.ac openocd.new/configure.ac
---- openocd/configure.ac	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/configure.ac	2024-11-24 09:21:57.044533762 +0800
-@@ -122,6 +122,7 @@
+diff --git a/configure.ac b/configure.ac
+index 567152b0a..f616d0d25 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -122,6 +122,7 @@ m4_define([ADAPTER_OPT], [m4_translit(ADAPTER_ARG($1), [_], [-])])
  m4_define([USB1_ADAPTERS],
  	[[[ftdi], [MPSSE mode of FTDI based devices], [FTDI]],
  	[[stlink], [ST-Link Programmer], [HLADAPTER_STLINK]],
@@ -9,7 +10,7 @@ diff -Nur openocd/configure.ac openocd.new/configure.ac
  	[[ti_icdi], [TI ICDI JTAG Programmer], [HLADAPTER_ICDI]],
  	[[ulink], [Keil ULINK JTAG Programmer], [ULINK]],
  	[[angie], [ANGIE Adapter], [ANGIE]],
-@@ -574,7 +575,11 @@
+@@ -576,7 +577,11 @@ AS_IF([test "x$build_vdebug" = "xyes"], [
  ], [
    AC_DEFINE([BUILD_VDEBUG], [0], [0 if you don't want Cadence vdebug interface.])
  ])
@@ -22,7 +23,7 @@ diff -Nur openocd/configure.ac openocd.new/configure.ac
  AS_IF([test "x$build_jtag_dpi" = "xyes"], [
    AC_DEFINE([BUILD_JTAG_DPI], [1], [1 if you want JTAG DPI.])
  ], [
-@@ -777,6 +782,7 @@
+@@ -775,6 +780,7 @@ AM_CONDITIONAL([IMX_GPIO], [test "x$build_imx_gpio" = "xyes"])
  AM_CONDITIONAL([AM335XGPIO], [test "x$build_am335xgpio" = "xyes"])
  AM_CONDITIONAL([BITBANG], [test "x$build_bitbang" = "xyes"])
  AM_CONDITIONAL([JTAG_VPI], [test "x$build_jtag_vpi" = "xyes"])
@@ -30,10 +31,32 @@ diff -Nur openocd/configure.ac openocd.new/configure.ac
  AM_CONDITIONAL([VDEBUG], [test "x$build_vdebug" = "xyes"])
  AM_CONDITIONAL([JTAG_DPI], [test "x$build_jtag_dpi" = "xyes"])
  AM_CONDITIONAL([USB_BLASTER_DRIVER], [test "x$enable_usb_blaster" != "xno" -o "x$enable_usb_blaster_2" != "xno"])
-diff -Nur openocd/src/flash/nor/core.c openocd.new/src/flash/nor/core.c
---- openocd/src/flash/nor/core.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/flash/nor/core.c	2024-11-24 09:21:57.044533762 +0800
-@@ -725,13 +725,14 @@
+diff --git a/src/flash/nor/Makefile.am b/src/flash/nor/Makefile.am
+index afa11e7d4..24cf987df 100644
+--- a/src/flash/nor/Makefile.am
++++ b/src/flash/nor/Makefile.am
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ 
+ noinst_LTLIBRARIES += %D%/libocdflashnor.la
++%C%_libocdflashnor_la_CPPFLAGS = $(AM_CPPFLAGS) -Wno-incompatible-pointer-types
+ %C%_libocdflashnor_la_SOURCES = \
+ 	%D%/core.c \
+ 	%D%/tcl.c \
+@@ -71,6 +72,8 @@ NOR_DRIVERS = \
+ 	%D%/stm32lx.c \
+ 	%D%/stm32l4x.c \
+ 	%D%/stm32h7x.c \
++	%D%/wcharm.c \
++	%D%/wchriscv.c \
+ 	%D%/str7x.c \
+ 	%D%/str9x.c \
+ 	%D%/str9xpec.c \
+diff --git a/src/flash/nor/core.c b/src/flash/nor/core.c
+index 5c4f2acca..8bfa823b1 100644
+--- a/src/flash/nor/core.c
++++ b/src/flash/nor/core.c
+@@ -725,13 +725,14 @@ static bool flash_write_check_gap(struct flash_bank *bank,
  	target_addr_t aligned2 = flash_write_align_start(bank, addr2);
  	return aligned1 + bank->minimal_write_gap < aligned2;
  }
@@ -51,7 +74,7 @@ diff -Nur openocd/src/flash/nor/core.c openocd.new/src/flash/nor/core.c
  	unsigned int section;
  	uint32_t section_offset;
  	struct flash_bank *c;
-@@ -739,7 +740,7 @@
+@@ -739,7 +740,7 @@ int flash_write_unlock_verify(struct target *target, struct image *image,
  
  	section = 0;
  	section_offset = 0;
@@ -60,7 +83,7 @@ diff -Nur openocd/src/flash/nor/core.c openocd.new/src/flash/nor/core.c
  	if (written)
  		*written = 0;
  
-@@ -782,6 +783,7 @@
+@@ -782,6 +783,7 @@ int flash_write_unlock_verify(struct target *target, struct image *image,
  
  		/* find the corresponding flash bank */
  		retval = get_flash_bank_by_addr(target, run_address, false, &c);
@@ -68,7 +91,7 @@ diff -Nur openocd/src/flash/nor/core.c openocd.new/src/flash/nor/core.c
  		if (retval != ERROR_OK)
  			goto done;
  		if (!c) {
-@@ -790,7 +792,7 @@
+@@ -790,7 +792,7 @@ int flash_write_unlock_verify(struct target *target, struct image *image,
  			section_offset = 0;
  			continue;
  		}
@@ -77,7 +100,7 @@ diff -Nur openocd/src/flash/nor/core.c openocd.new/src/flash/nor/core.c
  		/* collect consecutive sections which fall into the same bank */
  		section_last = section;
  		padding[section] = 0;
-@@ -963,11 +965,17 @@
+@@ -963,11 +965,17 @@ int flash_write_unlock_verify(struct target *target, struct image *image,
  
  		if (retval == ERROR_OK) {
  			if (write) {
@@ -97,7 +120,7 @@ diff -Nur openocd/src/flash/nor/core.c openocd.new/src/flash/nor/core.c
  		if (retval == ERROR_OK) {
  			if (verify) {
  				/* verify flash sectors */
-@@ -985,7 +993,15 @@
+@@ -985,7 +993,15 @@ int flash_write_unlock_verify(struct target *target, struct image *image,
  		if (written)
  			*written += run_size;	/* add run size to total written counter */
  	}
@@ -113,10 +136,11 @@ diff -Nur openocd/src/flash/nor/core.c openocd.new/src/flash/nor/core.c
  done:
  	free(sections);
  	free(padding);
-diff -Nur openocd/src/flash/nor/driver.h openocd.new/src/flash/nor/driver.h
---- openocd/src/flash/nor/driver.h	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/flash/nor/driver.h	2024-11-24 09:21:57.044533762 +0800
-@@ -297,6 +297,8 @@
+diff --git a/src/flash/nor/driver.h b/src/flash/nor/driver.h
+index 211661e21..57c3111e5 100644
+--- a/src/flash/nor/driver.h
++++ b/src/flash/nor/driver.h
+@@ -297,6 +297,8 @@ extern const struct flash_driver stm32f2x_flash;
  extern const struct flash_driver stm32h7x_flash;
  extern const struct flash_driver stm32l4x_flash;
  extern const struct flash_driver stm32lx_flash;
@@ -125,10 +149,11 @@ diff -Nur openocd/src/flash/nor/driver.h openocd.new/src/flash/nor/driver.h
  extern const struct flash_driver stmqspi_flash;
  extern const struct flash_driver stmsmi_flash;
  extern const struct flash_driver str7x_flash;
-diff -Nur openocd/src/flash/nor/drivers.c openocd.new/src/flash/nor/drivers.c
---- openocd/src/flash/nor/drivers.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/flash/nor/drivers.c	2024-11-24 09:21:57.044533762 +0800
-@@ -73,6 +73,8 @@
+diff --git a/src/flash/nor/drivers.c b/src/flash/nor/drivers.c
+index dd9995ecb..714ffde12 100644
+--- a/src/flash/nor/drivers.c
++++ b/src/flash/nor/drivers.c
+@@ -73,6 +73,8 @@ static const struct flash_driver * const flash_drivers[] = {
  	&stm32lx_flash,
  	&stm32l4x_flash,
  	&stm32h7x_flash,
@@ -137,29 +162,10 @@ diff -Nur openocd/src/flash/nor/drivers.c openocd.new/src/flash/nor/drivers.c
  	&stmsmi_flash,
  	&stmqspi_flash,
  	&str7x_flash,
-diff -Nur openocd/src/flash/nor/Makefile.am openocd.new/src/flash/nor/Makefile.am
---- openocd/src/flash/nor/Makefile.am	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/flash/nor/Makefile.am	2024-11-24 09:21:57.044533762 +0800
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- 
- noinst_LTLIBRARIES += %D%/libocdflashnor.la
-+%C%_libocdflashnor_la_CPPFLAGS = $(AM_CPPFLAGS) -Wno-incompatible-pointer-types
- %C%_libocdflashnor_la_SOURCES = \
- 	%D%/core.c \
- 	%D%/tcl.c \
-@@ -71,6 +72,8 @@
- 	%D%/stm32lx.c \
- 	%D%/stm32l4x.c \
- 	%D%/stm32h7x.c \
-+	%D%/wcharm.c \
-+	%D%/wchriscv.c \
- 	%D%/str7x.c \
- 	%D%/str9x.c \
- 	%D%/str9xpec.c \
-diff -Nur openocd/src/flash/nor/tcl.c openocd.new/src/flash/nor/tcl.c
---- openocd/src/flash/nor/tcl.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/flash/nor/tcl.c	2024-11-24 09:21:57.044533762 +0800
+diff --git a/src/flash/nor/tcl.c b/src/flash/nor/tcl.c
+index e21620934..e3085e8f1 100644
+--- a/src/flash/nor/tcl.c
++++ b/src/flash/nor/tcl.c
 @@ -19,6 +19,10 @@
   * Implements Tcl commands used to access NOR flash facilities.
   */
@@ -171,7 +177,7 @@ diff -Nur openocd/src/flash/nor/tcl.c openocd.new/src/flash/nor/tcl.c
  COMMAND_HELPER(flash_command_get_bank_probe_optional, unsigned int name_index,
  	       struct flash_bank **bank, bool do_probe)
  {
-@@ -388,7 +392,23 @@
+@@ -388,7 +392,23 @@ COMMAND_HANDLER(handle_flash_protect_command)
  
  	return retval;
  }
@@ -195,7 +201,7 @@ diff -Nur openocd/src/flash/nor/tcl.c openocd.new/src/flash/nor/tcl.c
  COMMAND_HANDLER(handle_flash_write_image_command)
  {
  	struct target *target = get_current_target(CMD_CTX);
-@@ -1229,6 +1249,13 @@
+@@ -1229,6 +1249,13 @@ static const struct command_registration flash_exec_command_handlers[] = {
  		.usage = "bank_id value",
  		.help = "Set default flash padded value",
  	},
@@ -209,9 +215,11 @@ diff -Nur openocd/src/flash/nor/tcl.c openocd.new/src/flash/nor/tcl.c
  	COMMAND_REGISTRATION_DONE
  };
  
-diff -Nur openocd/src/flash/nor/wcharm.c openocd.new/src/flash/nor/wcharm.c
---- openocd/src/flash/nor/wcharm.c	1970-01-01 08:00:00.000000000 +0800
-+++ openocd.new/src/flash/nor/wcharm.c	2024-11-24 09:21:57.045533766 +0800
+diff --git a/src/flash/nor/wcharm.c b/src/flash/nor/wcharm.c
+new file mode 100644
+index 000000000..124e95c9a
+--- /dev/null
++++ b/src/flash/nor/wcharm.c
 @@ -0,0 +1,1091 @@
 +/***************************************************************************
 + * 	 WCH ARM mcu :CH32F10X ;CH32F20X                                       *
@@ -1304,9 +1312,11 @@ diff -Nur openocd/src/flash/nor/wcharm.c openocd.new/src/flash/nor/wcharm.c
 +	.info = get_ch32x_info,
 +	.free_driver_priv = default_flash_free_driver_priv,
 +};
-diff -Nur openocd/src/flash/nor/wchriscv.c openocd.new/src/flash/nor/wchriscv.c
---- openocd/src/flash/nor/wchriscv.c	1970-01-01 08:00:00.000000000 +0800
-+++ openocd.new/src/flash/nor/wchriscv.c	2024-11-24 09:21:57.045533766 +0800
+diff --git a/src/flash/nor/wchriscv.c b/src/flash/nor/wchriscv.c
+new file mode 100644
+index 000000000..175d2b7a8
+--- /dev/null
++++ b/src/flash/nor/wchriscv.c
 @@ -0,0 +1,233 @@
 +/***************************************************************************
 + *   WCH RISC-V mcu :CH32V103X CH32V20X CH32V30X CH56X CH57X CH58X         *
@@ -1541,9 +1551,10 @@ diff -Nur openocd/src/flash/nor/wchriscv.c openocd.new/src/flash/nor/wchriscv.c
 +	.erase_check = default_flash_blank_check,
 +	.free_driver_priv = default_flash_free_driver_priv,
 +};
-diff -Nur openocd/src/helper/options.c openocd.new/src/helper/options.c
---- openocd/src/helper/options.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/helper/options.c	2024-11-24 09:21:57.045533766 +0800
+diff --git a/src/helper/options.c b/src/helper/options.c
+index 61a101469..8fbefe80d 100644
+--- a/src/helper/options.c
++++ b/src/helper/options.c
 @@ -35,7 +35,7 @@
  #endif
  
@@ -1553,7 +1564,7 @@ diff -Nur openocd/src/helper/options.c openocd.new/src/helper/options.c
  static const struct option long_options[] = {
  	{"help",		no_argument,			&help_flag,		1},
  	{"version",		no_argument,			&version_flag,	1},
-@@ -266,11 +266,12 @@
+@@ -266,11 +266,12 @@ int parse_cmdline_args(struct command_context *cmd_ctx, int argc, char *argv[])
  {
  	int c;
  
@@ -1567,7 +1578,7 @@ diff -Nur openocd/src/helper/options.c openocd.new/src/helper/options.c
  
  		/* Detect the end of the options. */
  		if (c == -1)
-@@ -307,8 +308,11 @@
+@@ -307,8 +308,11 @@ int parse_cmdline_args(struct command_context *cmd_ctx, int argc, char *argv[])
  					command_run_linef(cmd_ctx, "log_output %s", optarg);
  				break;
  			case 'c':		/* --command | -c */
@@ -1581,9 +1592,10 @@ diff -Nur openocd/src/helper/options.c openocd.new/src/helper/options.c
  				break;
  			default:  /* '?' */
  				/* getopt will emit an error message, all we have to do is bail. */
-diff -Nur openocd/src/jtag/core.c openocd.new/src/jtag/core.c
---- openocd/src/jtag/core.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/jtag/core.c	2024-11-24 09:21:57.045533766 +0800
+diff --git a/src/jtag/core.c b/src/jtag/core.c
+index 769e07571..897530d6f 100644
+--- a/src/jtag/core.c
++++ b/src/jtag/core.c
 @@ -37,7 +37,7 @@
  
  /* ipdbg are utilities to debug IP-cores. It uses JTAG for transport. */
@@ -1593,7 +1605,7 @@ diff -Nur openocd/src/jtag/core.c openocd.new/src/jtag/core.c
  /** The number of JTAG queue flushes (for profiling and debugging purposes). */
  static unsigned int jtag_flush_queue_count;
  
-@@ -1234,6 +1234,10 @@
+@@ -1240,6 +1240,10 @@ static int jtag_examine_chain(void)
  	 */
  	LOG_DEBUG("DR scan interrogation for IDCODE/BYPASS");
  	retval = jtag_examine_chain_execute(idcode_buffer, max_taps);
@@ -1604,7 +1616,7 @@ diff -Nur openocd/src/jtag/core.c openocd.new/src/jtag/core.c
  	if (retval != ERROR_OK)
  		goto out;
  	if (!jtag_examine_chain_check(idcode_buffer, max_taps)) {
-@@ -1411,7 +1415,7 @@
+@@ -1417,7 +1421,7 @@ static int jtag_validate_ircapture(void)
  		 */
  		uint64_t val = buf_get_u64(ir_test, chain_pos, tap->ir_length);
  		if ((val & tap->ir_capture_mask) != tap->ir_capture_value) {
@@ -1613,10 +1625,35 @@ diff -Nur openocd/src/jtag/core.c openocd.new/src/jtag/core.c
  				jtag_tap_name(tap),
  				(tap->ir_length + 7) / tap->ir_length, val,
  				(tap->ir_length + 7) / tap->ir_length, tap->ir_capture_value);
-diff -Nur openocd/src/jtag/drivers/cmsis_dap.c openocd.new/src/jtag/drivers/cmsis_dap.c
---- openocd/src/jtag/drivers/cmsis_dap.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/jtag/drivers/cmsis_dap.c	2024-11-24 09:21:57.046533770 +0800
-@@ -252,8 +252,9 @@
+diff --git a/src/jtag/drivers/Makefile.am b/src/jtag/drivers/Makefile.am
+index 8be834859..cee34015a 100644
+--- a/src/jtag/drivers/Makefile.am
++++ b/src/jtag/drivers/Makefile.am
+@@ -7,7 +7,7 @@ noinst_LTLIBRARIES += %D%/libocdjtagdrivers.la
+ 	$(DRIVERFILES) \
+ 	$(DRIVERHEADERS)
+ 
+-%C%_libocdjtagdrivers_la_CPPFLAGS = $(AM_CPPFLAGS)
++%C%_libocdjtagdrivers_la_CPPFLAGS = $(AM_CPPFLAGS) -Wno-incompatible-pointer-types
+ 
+ ULINK_FIRMWARE = %D%/OpenULINK
+ ANGIE_FILES = %D%/angie
+@@ -204,6 +204,10 @@ endif
+ if AM335XGPIO
+ DRIVERFILES += %D%/am335xgpio.c
+ endif
++if WLINK
++DRIVERFILES += %D%/wlink.c
++endif
++
+ 
+ DRIVERHEADERS = \
+ 	%D%/bitbang.h \
+diff --git a/src/jtag/drivers/cmsis_dap.c b/src/jtag/drivers/cmsis_dap.c
+index 2f776cb38..4d2946fd7 100644
+--- a/src/jtag/drivers/cmsis_dap.c
++++ b/src/jtag/drivers/cmsis_dap.c
+@@ -252,8 +252,9 @@ static int queued_retval;
  
  static uint8_t output_pins = SWJ_PIN_SRST | SWJ_PIN_TRST;
  
@@ -1627,7 +1664,7 @@ diff -Nur openocd/src/jtag/drivers/cmsis_dap.c openocd.new/src/jtag/drivers/cmsi
  
  static int cmsis_dap_quit(void);
  
-@@ -290,9 +291,11 @@
+@@ -290,9 +291,11 @@ static int cmsis_dap_open(void)
  	}
  
  	dap->backend = backend;
@@ -1640,9 +1677,10 @@ diff -Nur openocd/src/jtag/drivers/cmsis_dap.c openocd.new/src/jtag/drivers/cmsi
  	return ERROR_OK;
  }
  
-diff -Nur openocd/src/jtag/drivers/cmsis_dap_usb_bulk.c openocd.new/src/jtag/drivers/cmsis_dap_usb_bulk.c
---- openocd/src/jtag/drivers/cmsis_dap_usb_bulk.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/jtag/drivers/cmsis_dap_usb_bulk.c	2024-11-24 09:22:19.808624034 +0800
+diff --git a/src/jtag/drivers/cmsis_dap_usb_bulk.c b/src/jtag/drivers/cmsis_dap_usb_bulk.c
+index 8d0cb544d..81f910105 100644
+--- a/src/jtag/drivers/cmsis_dap_usb_bulk.c
++++ b/src/jtag/drivers/cmsis_dap_usb_bulk.c
 @@ -20,7 +20,7 @@
   *   spen@spen-soft.co.uk                                                  *
   ***************************************************************************/
@@ -1661,7 +1699,7 @@ diff -Nur openocd/src/jtag/drivers/cmsis_dap_usb_bulk.c openocd.new/src/jtag/dri
  enum {
  	CMSIS_DAP_TRANSFER_PENDING = 0,	/* must be 0, used in libusb_handle_events_completed */
  	CMSIS_DAP_TRANSFER_IDLE,
-@@ -58,7 +60,7 @@
+@@ -58,7 +60,7 @@ struct cmsis_dap_backend_data {
  };
  
  static int cmsis_dap_usb_interface = -1;
@@ -1670,10 +1708,11 @@ diff -Nur openocd/src/jtag/drivers/cmsis_dap_usb_bulk.c openocd.new/src/jtag/dri
  static void cmsis_dap_usb_close(struct cmsis_dap *dap);
  static int cmsis_dap_usb_alloc(struct cmsis_dap *dap, unsigned int pkt_sz);
  static void cmsis_dap_usb_free(struct cmsis_dap *dap);
-@@ -440,6 +442,400 @@
+@@ -439,6 +441,400 @@ static void LIBUSB_CALL cmsis_dap_usb_callback(struct libusb_transfer *transfer)
+ 		tr->status = ERROR_JTAG_DEVICE_ERROR;
  	}
  }
- 
++
 +
 +
 +
@@ -1870,10 +1909,10 @@ diff -Nur openocd/src/jtag/drivers/cmsis_dap_usb_bulk.c openocd.new/src/jtag/dri
 +			wlink_name="WCH-LinkE-CH32V307 r0-1v3  mod:ARM";
 +			break;
 +		default:
-+			// do not report error when we did not know the version,
++			// do not report error when we do not know the version,
 +			// hope it can support more WCH-LinkE devices in future.
 +			LOG_WARNING("Unknown reply: %d, WCH-Link unknown version: %d.%d ", rxbuf[5], rxbuf[3], rxbuf[4]);
-+			LOG_WARNING("If it not works properly, please report a issue to: https://github.com/cjacker/opensource-toolchain-ch32v.");
++			LOG_WARNING("If it not works properly, please report a issue to: https://github.com/cjacker/wch-openocd.");
 +			wlink_name="WCH-Link Unknown version  mod:ARM";
 +			break;
 +		}
@@ -2067,14 +2106,14 @@ diff -Nur openocd/src/jtag/drivers/cmsis_dap_usb_bulk.c openocd.new/src/jtag/dri
 +
 +
 +
-+
+ 
  static int cmsis_dap_usb_read(struct cmsis_dap *dap, int transfer_timeout_ms,
  							  struct timeval *wait_timeout)
- {
-diff -Nur openocd/src/jtag/drivers/cmsis_dap_usb_hid.c openocd.new/src/jtag/drivers/cmsis_dap_usb_hid.c
---- openocd/src/jtag/drivers/cmsis_dap_usb_hid.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/jtag/drivers/cmsis_dap_usb_hid.c	2024-11-24 09:21:57.046533770 +0800
-@@ -97,7 +97,7 @@
+diff --git a/src/jtag/drivers/cmsis_dap_usb_hid.c b/src/jtag/drivers/cmsis_dap_usb_hid.c
+index aeec685b9..e2250e0fb 100644
+--- a/src/jtag/drivers/cmsis_dap_usb_hid.c
++++ b/src/jtag/drivers/cmsis_dap_usb_hid.c
+@@ -97,7 +97,7 @@ static int cmsis_dap_hid_open(struct cmsis_dap *dap, uint16_t vids[], uint16_t p
  			if (!cur_dev->product_string) {
  				LOG_DEBUG("Cannot read product string of device 0x%x:0x%x",
  					  cur_dev->vendor_id, cur_dev->product_id);
@@ -2083,32 +2122,11 @@ diff -Nur openocd/src/jtag/drivers/cmsis_dap_usb_hid.c openocd.new/src/jtag/driv
  				/* if the user hasn't specified VID:PID *and*
  				 * product string contains "CMSIS-DAP", pick it
  				 */
-diff -Nur openocd/src/jtag/drivers/Makefile.am openocd.new/src/jtag/drivers/Makefile.am
---- openocd/src/jtag/drivers/Makefile.am	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/jtag/drivers/Makefile.am	2024-11-24 09:21:57.046533770 +0800
-@@ -7,7 +7,7 @@
- 	$(DRIVERFILES) \
- 	$(DRIVERHEADERS)
- 
--%C%_libocdjtagdrivers_la_CPPFLAGS = $(AM_CPPFLAGS)
-+%C%_libocdjtagdrivers_la_CPPFLAGS = $(AM_CPPFLAGS) -Wno-incompatible-pointer-types
- 
- ULINK_FIRMWARE = %D%/OpenULINK
- ANGIE_FILES = %D%/angie
-@@ -204,6 +204,10 @@
- if AM335XGPIO
- DRIVERFILES += %D%/am335xgpio.c
- endif
-+if WLINK
-+DRIVERFILES += %D%/wlink.c
-+endif
-+
- 
- DRIVERHEADERS = \
- 	%D%/bitbang.h \
-diff -Nur openocd/src/jtag/drivers/wlink.c openocd.new/src/jtag/drivers/wlink.c
---- openocd/src/jtag/drivers/wlink.c	1970-01-01 08:00:00.000000000 +0800
-+++ openocd.new/src/jtag/drivers/wlink.c	2024-11-24 09:22:19.807624030 +0800
+diff --git a/src/jtag/drivers/wlink.c b/src/jtag/drivers/wlink.c
+new file mode 100644
+index 000000000..4fa3bb017
+--- /dev/null
++++ b/src/jtag/drivers/wlink.c
 @@ -0,0 +1,1955 @@
 +/*
 + * WCH_LINLK port debug driver for WCH RISC-V mcu :
@@ -3600,11 +3618,11 @@ diff -Nur openocd/src/jtag/drivers/wlink.c openocd.new/src/jtag/drivers/wlink.c
 +			wlink_name="WCH-LinkE-CH32V307 r0-1v3  mod:RV";
 +			break;
 +		default:
-+			// do not report error when we did not know the version,
++			// do not report error when we do not know the version,
 +			// hope it can support more WCH-LinkE devices in future.
 +			LOG_WARNING("Unknown reply: %d, WCH-LINK unknown version: %d.%d ", rxbuf[5], rxbuf[3], rxbuf[4]);
-+			LOG_WARNING("If it not works properly, please report a issue to: https://github.com/cjacker/opensource-toolchain-ch32v.");
-+			wlink_name="WCH-Link Unknown version  mod:ARM";
++			LOG_WARNING("If it not works properly, please report a issue to: https://github.com/cjacker/wch-openocd.");
++			wlink_name="WCH-Link Unknown version  mod:RV";
 +			break;
 +		}
 +		LOG_INFO("%s version %d.%d ",wlink_name, rxbuf[3], rxbuf[4]);
@@ -4065,9 +4083,10 @@ diff -Nur openocd/src/jtag/drivers/wlink.c openocd.new/src/jtag/drivers/wlink.c
 +	.quit = wlink_quit,
 +	.jtag_ops = &wlink_interface,
 +};
-diff -Nur openocd/src/jtag/interfaces.c openocd.new/src/jtag/interfaces.c
---- openocd/src/jtag/interfaces.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/jtag/interfaces.c	2024-11-24 09:21:57.047533774 +0800
+diff --git a/src/jtag/interfaces.c b/src/jtag/interfaces.c
+index 67f0838e3..664443ba1 100644
+--- a/src/jtag/interfaces.c
++++ b/src/jtag/interfaces.c
 @@ -20,6 +20,9 @@
  #ifdef HAVE_CONFIG_H
  #include "config.h"
@@ -4078,7 +4097,7 @@ diff -Nur openocd/src/jtag/interfaces.c openocd.new/src/jtag/interfaces.c
  
  #include "interfaces.h"
  
-@@ -141,12 +144,16 @@
+@@ -141,12 +144,16 @@ struct adapter_driver *adapter_drivers[] = {
  #if BUILD_XDS110 == 1
  		&xds110_adapter_driver,
  #endif
@@ -4095,10 +4114,11 @@ diff -Nur openocd/src/jtag/interfaces.c openocd.new/src/jtag/interfaces.c
  #if BUILD_DMEM == 1
  		&dmem_dap_adapter_driver,
  #endif
-diff -Nur openocd/src/openocd.c openocd.new/src/openocd.c
---- openocd/src/openocd.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/openocd.c	2024-11-24 09:21:57.047533774 +0800
-@@ -282,7 +282,7 @@
+diff --git a/src/openocd.c b/src/openocd.c
+index 9fd709e32..7724fe234 100644
+--- a/src/openocd.c
++++ b/src/openocd.c
+@@ -282,7 +282,7 @@ static struct command_context *setup_command_handler(Jim_Interp *interp)
  static int openocd_thread(int argc, char *argv[], struct command_context *cmd_ctx)
  {
  	int ret;
@@ -4107,7 +4127,7 @@ diff -Nur openocd/src/openocd.c openocd.new/src/openocd.c
  	if (parse_cmdline_args(cmd_ctx, argc, argv) != ERROR_OK)
  		return ERROR_FAIL;
  
-@@ -310,8 +310,7 @@
+@@ -310,8 +310,7 @@ static int openocd_thread(int argc, char *argv[], struct command_context *cmd_ct
  		}
  	}
  
@@ -4117,9 +4137,22 @@ diff -Nur openocd/src/openocd.c openocd.new/src/openocd.c
  	int last_signal = server_quit();
  	if (last_signal != ERROR_OK)
  		return last_signal;
-diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
---- openocd/src/server/gdb_server.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/server/gdb_server.c	2024-11-24 09:21:57.048533777 +0800
+diff --git a/src/server/Makefile.am b/src/server/Makefile.am
+index 13a591409..cd63afa74 100644
+--- a/src/server/Makefile.am
++++ b/src/server/Makefile.am
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ 
+ noinst_LTLIBRARIES += %D%/libserver.la
++%C%_libserver_la_CPPFLAGS = $(AM_CPPFLAGS) -Wno-incompatible-pointer-types
+ %C%_libserver_la_SOURCES = \
+ 	%D%/server.c \
+ 	%D%/telnet_server.c \
+diff --git a/src/server/gdb_server.c b/src/server/gdb_server.c
+index c572f392a..e65e615fd 100644
+--- a/src/server/gdb_server.c
++++ b/src/server/gdb_server.c
 @@ -49,6 +49,14 @@
   * giving GDB access to the JTAG or other hardware debugging facilities
   * found in most modern embedded processors.
@@ -4135,7 +4168,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  
  enum gdb_output_flag {
  	/* GDB doesn't accept 'O' packets */
-@@ -1088,7 +1096,7 @@
+@@ -1088,7 +1096,7 @@ static int gdb_new_connection(struct connection *connection)
  
  	return ERROR_OK;
  }
@@ -4144,7 +4177,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  static int gdb_connection_closed(struct connection *connection)
  {
  	struct target *target;
-@@ -1125,7 +1133,8 @@
+@@ -1125,7 +1133,8 @@ static int gdb_connection_closed(struct connection *connection)
  	target_call_event_callbacks(target, TARGET_EVENT_GDB_END);
  
  	target_call_event_callbacks(target, TARGET_EVENT_GDB_DETACH);
@@ -4154,7 +4187,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  	return ERROR_OK;
  }
  
-@@ -1639,7 +1648,9 @@
+@@ -1639,7 +1648,9 @@ static int gdb_write_memory_binary_packet(struct connection *connection,
  	packet++;
  
  	addr = strtoull(packet, &separator, 16);
@@ -4165,7 +4198,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  	if (*separator != ',') {
  		LOG_ERROR("incomplete write memory binary packet received, dropping connection");
  		return ERROR_SERVER_REMOTE_CLOSED;
-@@ -1741,9 +1752,22 @@
+@@ -1741,9 +1752,22 @@ static int gdb_breakpoint_watchpoint_packet(struct connection *connection,
  	int retval;
  
  	LOG_DEBUG("[%s]", target_name(target));
@@ -4190,7 +4223,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  	if (type == 0)	/* memory breakpoint */
  		bp_type = BKPT_SOFT;
  	else if (type == 1)	/* hardware breakpoint */
-@@ -3241,7 +3265,7 @@
+@@ -3241,7 +3265,7 @@ static bool gdb_handle_vrun_packet(struct connection *connection, const char *pa
  	gdb_put_packet(connection, "S00", 3);
  	return true;
  }
@@ -4199,7 +4232,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  static int gdb_v_packet(struct connection *connection,
  		char const *packet, int packet_size)
  {
-@@ -3262,6 +3286,13 @@
+@@ -3262,6 +3286,13 @@ static int gdb_v_packet(struct connection *connection,
  
  		return ERROR_OK;
  	}
@@ -4213,7 +4246,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  
  	if (strncmp(packet, "vRun", 4) == 0) {
  		bool handled;
-@@ -3283,7 +3314,13 @@
+@@ -3283,7 +3314,13 @@ static int gdb_v_packet(struct connection *connection,
  	if (strncmp(packet, "vFlashErase:", 12) == 0) {
  		target_addr_t addr;
  		unsigned long length;
@@ -4228,7 +4261,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  		char const *parse = packet + 12;
  		if (*parse == '\0') {
  			LOG_ERROR("incomplete vFlashErase packet received, dropping connection");
-@@ -3505,7 +3542,6 @@
+@@ -3505,7 +3542,6 @@ static int gdb_input_inner(struct connection *connection)
  	int retval;
  	struct gdb_connection *gdb_con = connection->priv;
  	static bool warn_use_ext;
@@ -4236,7 +4269,7 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  	target = get_target_from_connection(connection);
  
  	/* drain input buffer. If one of the packets fail, then an error
-@@ -3662,12 +3698,13 @@
+@@ -3662,12 +3698,13 @@ static int gdb_input_inner(struct connection *connection)
  					retval = gdb_write_memory_binary_packet(connection, packet, packet_size);
  					gdb_con->output_flag = GDB_OUTPUT_NO;
  					break;
@@ -4251,20 +4284,10 @@ diff -Nur openocd/src/server/gdb_server.c openocd.new/src/server/gdb_server.c
  					return ERROR_SERVER_REMOTE_CLOSED;
  				case '!':
  					/* handle extended remote protocol */
-diff -Nur openocd/src/server/Makefile.am openocd.new/src/server/Makefile.am
---- openocd/src/server/Makefile.am	2023-01-15 17:56:19.000000000 +0800
-+++ openocd.new/src/server/Makefile.am	2024-11-24 09:21:57.048533777 +0800
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- 
- noinst_LTLIBRARIES += %D%/libserver.la
-+%C%_libserver_la_CPPFLAGS = $(AM_CPPFLAGS) -Wno-incompatible-pointer-types
- %C%_libserver_la_SOURCES = \
- 	%D%/server.c \
- 	%D%/telnet_server.c \
-diff -Nur openocd/src/target/riscv/Makefile.am openocd.new/src/target/riscv/Makefile.am
---- openocd/src/target/riscv/Makefile.am	2023-01-15 17:56:19.000000000 +0800
-+++ openocd.new/src/target/riscv/Makefile.am	2024-11-24 09:21:57.048533777 +0800
+diff --git a/src/target/riscv/Makefile.am b/src/target/riscv/Makefile.am
+index 4b6a74f0b..648cda842 100644
+--- a/src/target/riscv/Makefile.am
++++ b/src/target/riscv/Makefile.am
 @@ -1,6 +1,7 @@
  # SPDX-License-Identifier: GPL-2.0-or-later
  
@@ -4273,16 +4296,18 @@ diff -Nur openocd/src/target/riscv/Makefile.am openocd.new/src/target/riscv/Make
  %C%_libriscv_la_SOURCES = \
         %D%/asm.h \
         %D%/batch.h \
-diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/riscv-013.c
---- openocd/src/target/riscv/riscv-013.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/target/riscv/riscv-013.c	2024-11-24 09:21:57.048533777 +0800
+diff --git a/src/target/riscv/riscv-013.c b/src/target/riscv/riscv-013.c
+index 658c1fd9d..2224e0627 100644
+--- a/src/target/riscv/riscv-013.c
++++ b/src/target/riscv/riscv-013.c
 @@ -28,7 +28,27 @@
  #include "program.h"
  #include "asm.h"
  #include "batch.h"
+-
 +#define RVFNIC_CTRLR 0xE000E048
 +#define NVIC_KEY 0xBEEF0000
- 
++
 +extern unsigned char	DMI_OP( 
 +	unsigned long	iIndex,  
 +	unsigned char	iAddr,       
@@ -4304,7 +4329,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  static int riscv013_on_step_or_resume(struct target *target, bool step);
  static int riscv013_step_or_resume_current_hart(struct target *target,
  		bool step, bool use_hasel);
-@@ -212,6 +232,11 @@
+@@ -212,6 +232,11 @@ typedef struct {
  
  	/* DM that provides access to this target. */
  	dm013_info_t *dm;
@@ -4316,7 +4341,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  } riscv013_info_t;
  
  static LIST_HEAD(dm_list);
-@@ -223,7 +248,102 @@
+@@ -223,7 +248,102 @@ static riscv013_info_t *get_info(const struct target *target)
  	assert(info->version_specific);
  	return info->version_specific;
  }
@@ -4419,7 +4444,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  /**
   * Return the DM structure for this target. If there isn't one, find it in the
   * global list of DMs. If it's not in there, then create one and initialize it
-@@ -441,6 +561,9 @@
+@@ -441,6 +561,9 @@ static uint32_t dtmcontrol_scan(struct target *target, uint32_t out)
  	}
  
  	uint32_t in = buf_get_u32(field.in_value, 0, 32);
@@ -4429,7 +4454,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	LOG_DEBUG("DTMCS: 0x%x -> 0x%x", out, in);
  
  	return in;
-@@ -456,7 +579,73 @@
+@@ -456,7 +579,73 @@ static void increase_dmi_busy_delay(struct target *target)
  
  	dtmcontrol_scan(target, DTM_DTMCS_DMIRESET);
  }
@@ -4503,7 +4528,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  /**
   * exec: If this is set, assume the scan results in an execution, so more
   * run-test/idle cycles may be required.
-@@ -557,6 +746,13 @@
+@@ -557,6 +746,13 @@ static int dmi_op_timeout(struct target *target, uint32_t *data_in,
  		bool *dmi_busy_encountered, int dmi_op, uint32_t address,
  		uint32_t data_out, int timeout_sec, bool exec, bool ensure_success)
  {
@@ -4517,7 +4542,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	select_dmi(target);
  
  	dmi_status_t status;
-@@ -667,7 +863,7 @@
+@@ -667,7 +863,7 @@ static int dmi_read_exec(struct target *target, uint32_t *value, uint32_t addres
  	return dmi_op(target, value, NULL, DMI_OP_READ, address, 0, true, true);
  }
  
@@ -4526,7 +4551,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  {
  	return dmi_op(target, NULL, NULL, DMI_OP_WRITE, address, value, false, true);
  }
-@@ -687,6 +883,7 @@
+@@ -687,6 +883,7 @@ static int dmstatus_read_timeout(struct target *target, uint32_t *dmstatus,
  		return result;
  	int dmstatus_version = get_field(*dmstatus, DM_DMSTATUS_VERSION);
  	if (dmstatus_version != 2 && dmstatus_version != 3) {
@@ -4534,7 +4559,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  		LOG_ERROR("OpenOCD only supports Debug Module version 2 (0.13) and 3 (1.0), not "
  				"%d (dmstatus=0x%x). This error might be caused by a JTAG "
  				"signal issue. Try reducing the JTAG clock speed.",
-@@ -1594,10 +1791,12 @@
+@@ -1594,10 +1791,12 @@ static int examine(struct target *target)
  		dmi_write(target, DM_DMCONTROL, DM_DMCONTROL_DMACTIVE);
  		dm->was_reset = true;
  	}
@@ -4549,7 +4574,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	uint32_t dmcontrol;
  	if (dmi_read(target, &dmcontrol, DM_DMCONTROL) != ERROR_OK)
  		return ERROR_FAIL;
-@@ -1732,6 +1931,9 @@
+@@ -1732,6 +1931,9 @@ static int examine(struct target *target)
  	else
  		r->xlen = 32;
  
@@ -4559,7 +4584,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	if (register_read(target, &r->misa, GDB_REGNO_MISA)) {
  		LOG_ERROR("Fatal: Failed to read MISA from hart %d.", r->current_hartid);
  		return ERROR_FAIL;
-@@ -2331,18 +2533,22 @@
+@@ -2331,18 +2533,22 @@ static int init_target(struct command_context *cmd_ctx,
  	info->abstract_write_fpr_supported = true;
  
  	info->has_aampostincrement = YNM_MAYBE;
@@ -4584,7 +4609,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	if (target_has_event_action(target, TARGET_EVENT_RESET_ASSERT)) {
  		/* Run the user-supplied script if there is one. */
  		target_handle_event(target, TARGET_EVENT_RESET_ASSERT);
-@@ -2390,6 +2596,7 @@
+@@ -2390,6 +2596,7 @@ static int deassert_reset(struct target *target)
  	RISCV_INFO(r);
  	RISCV013_INFO(info);
  	select_dmi(target);
@@ -4592,7 +4617,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  
  	/* Clear the reset, but make sure haltreq is still set */
  	uint32_t control = 0, control_haltreq;
-@@ -2412,7 +2619,6 @@
+@@ -2412,7 +2619,6 @@ static int deassert_reset(struct target *target)
  		} else {
  			index = r->current_hartid;
  		}
@@ -4600,7 +4625,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  		LOG_DEBUG("Waiting for hart %d to come out of reset.", index);
  		while (1) {
  			int result = dmstatus_read_timeout(target, &dmstatus, true,
-@@ -2424,6 +2630,9 @@
+@@ -2424,6 +2630,9 @@ static int deassert_reset(struct target *target)
  						index, riscv_reset_timeout_sec);
  			if (result != ERROR_OK)
  				return result;
@@ -4610,7 +4635,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  			/* Certain debug modules, like the one in GD32VF103
  			 * MCUs, violate the specification's requirement that
  			 * each hart is in "exactly one of four states" and,
-@@ -2454,9 +2663,28 @@
+@@ -2454,9 +2663,28 @@ static int deassert_reset(struct target *target)
  			break;
  	}
  	info->dmi_busy_delay = dmi_busy_delay;
@@ -4640,7 +4665,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  static int execute_fence(struct target *target)
  {
  	/* FIXME: For non-coherent systems we need to flush the caches right
-@@ -3136,6 +3364,8 @@
+@@ -3136,6 +3364,8 @@ static int read_memory_progbuf_inner(struct target *target, target_addr_t addres
  	if (dmi_write(target, DM_ABSTRACTAUTO,
  			1 << DM_ABSTRACTAUTO_AUTOEXECDATA_OFFSET) != ERROR_OK)
  		goto error;
@@ -4649,7 +4674,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	/* Read garbage from dmi_data0, which triggers another execution of the
  	 * program. Now dmi_data0 contains the first good result, and s1 the next
  	 * memory value. */
-@@ -3903,10 +4133,12 @@
+@@ -3903,10 +4133,12 @@ static int write_memory_progbuf(struct target *target, target_addr_t address,
  				}
  
  				/* Turn on autoexec */
@@ -4665,7 +4690,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  			} else {
  				if (size > 4)
  					riscv_batch_add_dmi_write(batch, DM_DATA1, value >> 32);
-@@ -3979,12 +4211,82 @@
+@@ -3979,12 +4211,82 @@ error:
  
  static int write_memory(struct target *target, target_addr_t address,
  		uint32_t size, uint32_t count, const uint8_t *buffer)
@@ -4750,7 +4775,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	int ret = ERROR_FAIL;
  	RISCV_INFO(r);
  	RISCV013_INFO(info);
-@@ -4036,6 +4338,7 @@
+@@ -4036,6 +4338,7 @@ static int write_memory(struct target *target, target_addr_t address,
  	LOG_ERROR("Target %s: Failed to write memory (addr=0x%" PRIx64 ")", target_name(target), address);
  	LOG_ERROR("  progbuf=%s, sysbus=%s, abstract=%s", progbuf_result, sysbus_result, abstract_result);
  	return ret;
@@ -4758,7 +4783,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  }
  
  static int arch_state(struct target *target)
-@@ -4347,6 +4650,10 @@
+@@ -4347,6 +4650,10 @@ static enum riscv_halt_reason riscv013_halt_reason(struct target *target)
  
  int riscv013_write_debug_buffer(struct target *target, unsigned int index, riscv_insn_t data)
  {
@@ -4769,7 +4794,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	dm013_info_t *dm = get_dm(target);
  	if (!dm)
  		return ERROR_FAIL;
-@@ -4414,13 +4721,32 @@
+@@ -4414,13 +4721,32 @@ static int maybe_execute_fence_i(struct target *target)
  		return execute_fence(target);
  	return ERROR_OK;
  }
@@ -4803,7 +4828,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	/* We want to twiddle some bits in the debug CSR so debugging works. */
  	riscv_reg_t dcsr;
  	int result = register_read(target, &dcsr, GDB_REGNO_DCSR);
-@@ -4437,6 +4763,7 @@
+@@ -4437,6 +4763,7 @@ static int riscv013_step_or_resume_current_hart(struct target *target,
  		bool step, bool use_hasel)
  {
  	RISCV_INFO(r);
@@ -4811,7 +4836,7 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  	LOG_DEBUG("resuming hart %d (for step?=%d)", r->current_hartid, step);
  	if (!riscv_is_halted(target)) {
  		LOG_ERROR("Hart %d is not halted!", r->current_hartid);
-@@ -4464,6 +4791,7 @@
+@@ -4464,6 +4791,7 @@ static int riscv013_step_or_resume_current_hart(struct target *target,
  			continue;
  
  		dmi_write(target, DM_DMCONTROL, dmcontrol);
@@ -4819,9 +4844,10 @@ diff -Nur openocd/src/target/riscv/riscv-013.c openocd.new/src/target/riscv/risc
  		return ERROR_OK;
  	}
  
-diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
---- openocd/src/target/riscv/riscv.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/target/riscv/riscv.c	2024-11-24 09:21:57.049533782 +0800
+diff --git a/src/target/riscv/riscv.c b/src/target/riscv/riscv.c
+index 99f40a739..bf88e9da4 100644
+--- a/src/target/riscv/riscv.c
++++ b/src/target/riscv/riscv.c
 @@ -23,6 +23,8 @@
  #include "debug_defines.h"
  #include <helper/bits.h>
@@ -4831,7 +4857,7 @@ diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
  #define get_field(reg, mask) (((reg) & (mask)) / ((mask) & ~((mask) << 1)))
  #define set_field(reg, mask, val) (((reg) & ~(mask)) | (((val) * ((mask) & ~((mask) << 1))) & (mask)))
  
-@@ -403,6 +405,9 @@
+@@ -403,6 +405,9 @@ static uint32_t dtmcontrol_scan(struct target *target, uint32_t out)
  	}
  
  	uint32_t in = buf_get_u32(field.in_value, 0, 32);
@@ -4841,7 +4867,7 @@ diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
  	LOG_DEBUG("DTMCONTROL: 0x%x -> 0x%x", out, in);
  
  	return in;
-@@ -583,7 +588,7 @@
+@@ -583,7 +588,7 @@ static int maybe_add_trigger_t1(struct target *target,
  
  	return ERROR_OK;
  }
@@ -4850,7 +4876,7 @@ diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
  static int maybe_add_trigger_t2(struct target *target,
  		struct trigger *trigger, uint64_t tdata1)
  {
-@@ -596,7 +601,8 @@
+@@ -596,7 +601,8 @@ static int maybe_add_trigger_t2(struct target *target,
  	}
  
  	/* address/data match trigger */
@@ -4860,7 +4886,7 @@ diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
  	tdata1 = set_field(tdata1, MCONTROL_ACTION,
  			MCONTROL_ACTION_DEBUG_MODE);
  	tdata1 = set_field(tdata1, MCONTROL_MATCH, MCONTROL_MATCH_EQUAL);
-@@ -701,7 +707,6 @@
+@@ -701,7 +707,6 @@ static int add_trigger(struct target *target, struct trigger *trigger)
  	for (i = 0; i < r->trigger_count; i++) {
  		if (r->trigger_unique_id[i] != -1)
  			continue;
@@ -4868,7 +4894,7 @@ diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
  		riscv_set_register(target, GDB_REGNO_TSELECT, i);
  
  		uint64_t tdata1;
-@@ -894,7 +899,6 @@
+@@ -894,7 +899,6 @@ static int riscv_add_breakpoint(struct target *target, struct breakpoint *breakp
  					TARGET_PRIxADDR, breakpoint->length, breakpoint->address);
  			return ERROR_FAIL;
  		}
@@ -4876,7 +4902,7 @@ diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
  	} else if (breakpoint->type == BKPT_HARD) {
  		struct trigger trigger;
  		trigger_from_breakpoint(&trigger, breakpoint);
-@@ -1275,6 +1279,17 @@
+@@ -1275,6 +1279,17 @@ static int riscv_assert_reset(struct target *target)
  	LOG_DEBUG("[%d]", target->coreid);
  	struct target_type *tt = get_target_type(target);
  	riscv_invalidate_register_cache(target);
@@ -4894,7 +4920,7 @@ diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
  	return tt->assert_reset(target);
  }
  
-@@ -3507,7 +3522,7 @@
+@@ -3507,7 +3522,7 @@ int riscv_enumerate_triggers(struct target *target)
  
  	riscv_set_register(target, GDB_REGNO_TSELECT, tselect);
  
@@ -4903,9 +4929,10 @@ diff -Nur openocd/src/target/riscv/riscv.c openocd.new/src/target/riscv/riscv.c
  
  	return ERROR_OK;
  }
-diff -Nur openocd/src/target/target.c openocd.new/src/target/target.c
---- openocd/src/target/target.c	2024-11-23 11:48:29.000000000 +0800
-+++ openocd.new/src/target/target.c	2024-11-24 09:21:57.050533785 +0800
+diff --git a/src/target/target.c b/src/target/target.c
+index 6c474899a..2c509b41f 100644
+--- a/src/target/target.c
++++ b/src/target/target.c
 @@ -52,6 +52,11 @@
  /* default halt wait timeout (ms) */
  #define DEFAULT_HALT_TIMEOUT 5000
@@ -4918,7 +4945,7 @@ diff -Nur openocd/src/target/target.c openocd.new/src/target/target.c
  static int target_read_buffer_default(struct target *target, target_addr_t address,
  		uint32_t count, uint8_t *buffer);
  static int target_write_buffer_default(struct target *target, target_addr_t address,
-@@ -3281,7 +3286,6 @@
+@@ -3281,7 +3286,6 @@ COMMAND_HANDLER(handle_soft_reset_halt_command)
  
  	return ERROR_OK;
  }
@@ -4926,7 +4953,7 @@ diff -Nur openocd/src/target/target.c openocd.new/src/target/target.c
  COMMAND_HANDLER(handle_reset_command)
  {
  	if (CMD_ARGC > 1)
-@@ -3296,10 +3300,13 @@
+@@ -3296,10 +3300,13 @@ COMMAND_HANDLER(handle_reset_command)
  		reset_mode = n->value;
  	}
  
@@ -4942,7 +4969,7 @@ diff -Nur openocd/src/target/target.c openocd.new/src/target/target.c
  
  COMMAND_HANDLER(handle_resume_command)
  {
-@@ -3768,11 +3775,14 @@
+@@ -3768,11 +3775,14 @@ static COMMAND_HELPER(handle_verify_image_command_internal, enum verify_mode ver
  	int retval;
  	uint32_t checksum = 0;
  	uint32_t mem_checksum = 0;
@@ -4959,7 +4986,7 @@ diff -Nur openocd/src/target/target.c openocd.new/src/target/target.c
  	if (CMD_ARGC < 1)
  		return ERROR_COMMAND_SYNTAX_ERROR;
  
-@@ -3803,6 +3813,45 @@
+@@ -3803,6 +3813,45 @@ static COMMAND_HELPER(handle_verify_image_command_internal, enum verify_mode ver
  	image_size = 0x0;
  	int diffs = 0;
  	retval = ERROR_OK;
@@ -5005,7 +5032,7 @@ diff -Nur openocd/src/target/target.c openocd.new/src/target/target.c
  	for (unsigned int i = 0; i < image.num_sections; i++) {
  		buffer = malloc(image.sections[i].size);
  		if (!buffer) {
-@@ -3823,8 +3872,7 @@
+@@ -3823,8 +3872,7 @@ static COMMAND_HELPER(handle_verify_image_command_internal, enum verify_mode ver
  			if (retval != ERROR_OK) {
  				free(buffer);
  				break;
@@ -5015,7 +5042,7 @@ diff -Nur openocd/src/target/target.c openocd.new/src/target/target.c
  			retval = target_checksum_memory(target, image.sections[i].base_address, buf_cnt, &mem_checksum);
  			if (retval != ERROR_OK) {
  				free(buffer);
-@@ -3837,14 +3885,13 @@
+@@ -3837,14 +3885,13 @@ static COMMAND_HELPER(handle_verify_image_command_internal, enum verify_mode ver
  				goto done;
  			}
  			if (checksum != mem_checksum) {
@@ -5034,31 +5061,35 @@ diff -Nur openocd/src/target/target.c openocd.new/src/target/target.c
  				retval = target_read_buffer(target, image.sections[i].base_address, buf_cnt, data);
  				if (retval == ERROR_OK) {
  					uint32_t t;
-@@ -6588,6 +6635,13 @@
+@@ -6587,6 +6634,13 @@ static const struct command_registration target_exec_command_handlers[] = {
+ 		.help = "Reset all targets into the specified mode. "
  			"Default reset mode is run, if not given.",
  	},
- 	{
++	{
 +		.name = "wlink_reset_resume",
 +		.handler = handle_wlink_reset_resume_command,
 +		.mode = COMMAND_EXEC,
 +		.usage = "",
 +		.help = "Reset && resume. ",
 +	},
-+	{
+ 	{
  		.name = "soft_reset_halt",
  		.handler = handle_soft_reset_halt_command,
- 		.mode = COMMAND_EXEC,
-diff -Nur openocd/tcl/interface/wlink.cfg openocd.new/tcl/interface/wlink.cfg
---- openocd/tcl/interface/wlink.cfg	1970-01-01 08:00:00.000000000 +0800
-+++ openocd.new/tcl/interface/wlink.cfg	2024-11-24 09:21:57.050533785 +0800
+diff --git a/tcl/interface/wlink.cfg b/tcl/interface/wlink.cfg
+new file mode 100644
+index 000000000..d913c073d
+--- /dev/null
++++ b/tcl/interface/wlink.cfg
 @@ -0,0 +1,4 @@
 +# Extracted from MRS wch-riscv.cfg to be just the "interface" portion
 +adapter driver wlink
 +wlink_set
 +
-diff -Nur openocd/tcl/target/wch-riscv.cfg openocd.new/tcl/target/wch-riscv.cfg
---- openocd/tcl/target/wch-riscv.cfg	1970-01-01 08:00:00.000000000 +0800
-+++ openocd.new/tcl/target/wch-riscv.cfg	2024-11-24 09:21:57.050533785 +0800
+diff --git a/tcl/target/wch-riscv.cfg b/tcl/target/wch-riscv.cfg
+new file mode 100644
+index 000000000..344a418a6
+--- /dev/null
++++ b/tcl/target/wch-riscv.cfg
 @@ -0,0 +1,13 @@
 +# Extracted from MRS wch-riscv.cfg, split to be just the _target_ portion
 +set _CHIPNAME wch-rv
