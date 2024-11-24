@@ -42,7 +42,9 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 # Hardware prerequist
 
 * A CH32V board or WCH CH5xx RISC-V BLE board
-* A 'WCH-LINKE' adapter
+* A 'WCH-LinkE' adapter
+  - either WCH-LinkE r0 1v2 or 1v3 supported by patched openocd in this repo.
+  - future version should be supported but waiting for test.
   - old 'WCH-LINK' (without E) do NOT support programming CH32V003.
 
 # Toolchain overview
@@ -204,7 +206,7 @@ You have to prepare a 'WCH-LINKE' usb adapter and build a forked version OpenOCD
 
 **Build and Install WCH OpenOCD:**
 
-Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use [third-party fork](https://github.com/karlp/openocd-hacks/) now, or use the patch I provide in this repo for latest version of OpenOCD:
+Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use [third-party fork](https://github.com/karlp/openocd-hacks/) now, or use the patch I provide in this repo for latest version of OpenOCD, both WCH-LinkE r0 1v2 and r0 1v3 can be supported:
 
 ```
 git clone https://github.com/openocd-org/openocd.git
