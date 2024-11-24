@@ -52,7 +52,7 @@ By the way, WCH CH571/573 and CH581/582/583 are series of 32-bit RISC-V core mic
 * Debugger: openocd/gdb
 * SDK: official EVT source package
 * Programmer:
-  - openocd for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
+  - patched OpenOCD for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
     * wlink to switch WCH-LinkE adapter to RV mode.
   - official WCHISPTool_CMD for ISP mode (close source)
   - wchisp for ISP mode
