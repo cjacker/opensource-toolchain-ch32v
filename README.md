@@ -39,7 +39,7 @@ WCH have an official online store on AliExpress, you can buy EVT board and WCH-L
 * Compiler: gcc
 * SDK: WCH official EVT source package
 * Programmer:
-  - [patched OpenOCD](https://github.com/cjacker/openocd-hacks) for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
+  - [patched OpenOCD](https://github.com/cjacker/wch-openocd) for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
     * [wlink](https://github.com/ch32-rs/wlink) to switch WCH-LinkE adapter to RV mode.
   - official [WCHISPTool_CMD](http://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html) for ISP mode (close source)
   - [wchisp](https://github.com/ch32-rs/wchisp) for ISP mode
@@ -192,15 +192,13 @@ At first, WCH private-forked OpenOCD is close sourced and only provide binaries 
 
 When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the old version forked OpenOCD can not support WCH-LinkE.
 
-Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface. but as reported by some users, it can not support WCH-LinkE r0 1v3. I create a [openocd fork](https://github.com/cjacker/openocd-hacks), and add WCH-LinkE r0 1v3 and maybe future version support.
+Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface. but as reported by some users, it can not support WCH-LinkE r0 1v3. I create a [openocd fork](https://github.com/cjacker/wch-openocd), and add WCH-LinkE r0 1v3 and maybe future version support.
 
 **Build and Install WCH OpenOCD:**
 
-Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12, you have to use [my fork](https://github.com/cjacker/openocd-hacks) now.
-
 ```
-git clone https://github.com/cjacker/openocd-hacks
-cd openocd-hacks
+git clone https://github.com/cjacker/wch-openocd
+cd wch-openocd
 
 ./configure --prefix=/opt/wch-openocd --program-prefix=wch- --enable-wlink
 make
