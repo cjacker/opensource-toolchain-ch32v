@@ -188,9 +188,9 @@ A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also sup
 
 CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-Link' or 'WCH-LinkE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
 
-At first, WCH private-forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Later (2022-03), the private-forked OpenOCD (0.11.0-dev) is opensourced by the request of opensource developers (https://github.com/kprasadvnsi/riscv-openocd-wch), but no update after that, and it can not support ch32v003 SDI interface.
+At first, WCH private-forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Later (2022-03), the [private-forked OpenOCD](https://github.com/kprasadvnsi/riscv-openocd-wch) is opensourced by the request of opensource developers, but no update after that, and it can not support ch32v003 which released later.
 
-When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the sources of old version WCH private-forked OpenOCD seems not work anymore.
+When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the old version forked OpenOCD can not support WCH-LinkE.
 
 Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface. but as reported by some users, it can not support WCH-LinkE r0 1v3. I create a [openocd fork](https://github.com/cjacker/openocd-hacks), and add WCH-LinkE r0 1v3 and maybe future version support.
 
@@ -245,7 +245,7 @@ sudo openocd -f wch-riscv.cfg
 ```
 Open another terminal and run:
 ```
-riscv-none-embed-gdb ./build/ch32v103.elf
+riscv-none-elf-gdb ./build/ch32v103.elf
 (gdb) target remote :3333
 Remote debugging using :3333
 _start () at Startup/startup_ch32v10x.S:15
