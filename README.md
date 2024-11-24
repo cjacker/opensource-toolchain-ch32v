@@ -200,7 +200,7 @@ You have to prepare a 'WCH-LinkE' usb adapter and build my forked OpenOCD with '
 
 **Build and Install WCH OpenOCD:**
 
-Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use [third-party fork](https://github.com/karlp/openocd-hacks/) now, or use the patch I provide in this repo for latest version of OpenOCD, both WCH-LinkE r0 1v2 and r0 1v3 can be supported:
+Upstream OpenOCD do NOT support 'RVSWD' and 'SDI' up to v0.12 as mentioned at beginning, you have to use [my forked OpenOCD](https://github.com/cjacker/wch-openocd) now, or use the patch I provide in this repo for latest version of OpenOCD, both WCH-LinkE r0 1v2 and r0 1v3 can be supported:
 
 ```
 git clone https://github.com/cjacker/wch-openocd
