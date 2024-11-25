@@ -239,7 +239,7 @@ For all examples in this repo, you can use 'make program' to program the target 
 
 Launch OpenOcd to connect to the target device:
 ```
-sudo openocd -f wch-riscv.cfg
+sudo wch-openocd -f wch-riscv.cfg
 ```
 Open another terminal and run:
 ```
