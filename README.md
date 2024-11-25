@@ -16,7 +16,7 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + [ISP programming](https://github.com/cjacker/opensource-toolchain-ch32v#isp-programming)
   + [OpenOCD programming](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming)
 - [Debugging](https://github.com/cjacker/opensource-toolchain-ch32v#debugging)
-- [Project templates](https://github.com/cjacker/opensource-toolchain-ch32v/edit/main/README.md#project-templates)
+- [Project templates](https://github.com/cjacker/opensource-toolchain-ch32v?tab=readme-ov-file#project-templates)
   + ch32v003evt
   + ch32x035evt
   + ch32v103evt
