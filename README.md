@@ -18,6 +18,7 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
 - [Debugging](https://github.com/cjacker/opensource-toolchain-ch32v#debugging)
 - [Project templates](https://github.com/cjacker/opensource-toolchain-ch32v/edit/main/README.md#project-templates)
   + ch32v003evt
+  + ch32x035evt
   + ch32v103evt
   + ch32v20xevt
   + ch32v307evt
@@ -95,6 +96,8 @@ If you used to do stm32 programming, you will feel very familiar with CH32V SDK.
 WCH provide evaluate source code package for every CH32V MCU model and licensed under Apache-2.0, you can download them from WCH official website according to your MCU model.
 
 For ch32v003, https://www.wch.cn/downloads/CH32V003EVT_ZIP.html
+
+For ch32x035, https://www.wch.cn/downloads/CH32X035EVT_ZIP.html
 
 For ch32v103, http://www.wch.cn/downloads/CH32V103EVT_ZIP.html.
 
@@ -270,6 +273,14 @@ The pre-converted project templates from WCH official EVT packages and supported
   + ch32v003a4m6
   + ch32v003f4u6
   + ch32v003f4p6
+- [ch32x035evt_gcc_makefile](https://github.com/cjacker/ch32x035evt_gcc_makefile)
+  + ch32x035r8t6
+  + ch32x035c8t6
+  + ch32x035g8u6
+  + ch32x035g8r6
+  + ch32x035f8u6
+  + ch32x035f7p6
+  + ch32x033f8p6
 - [ch32v103evt_gcc_makefile](https://github.com/cjacker/ch32v103evt_gcc_makefile)
   + ch32v103c6t6
   + ch32v103c8u6
