@@ -8,14 +8,14 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
 - [RISC-V GNU Toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#risc-v-gnu-toolchain)
   + [Building from source](https://github.com/cjacker/opensource-toolchain-ch32v#building-from-source)
   + [Use prebuilt toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#use-prebuilt-toolchain)
-    - [Xpack riscv toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#xpack-riscv-toolchain)
+    - [Xpack riscv toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#use-prebuilt-toolchain)
 - [SDK](https://github.com/cjacker/opensource-toolchain-ch32v#sdk)
-  + [For CH32V](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch32v)
+  + [For CH32V](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch32v-evt-packages)
   + [For CH5XX RISC-V BLE](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch5xx-risc-v-ble)
 - [Programming](https://github.com/cjacker/opensource-toolchain-ch32v#programming)
   + [ISP programming](https://github.com/cjacker/opensource-toolchain-ch32v#isp-programming)
   + [OpenOCD programming](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming)
-- [Debugging](https://github.com/cjacker/opensource-toolchain-ch32v#debugging)
+- [Debugging](https://github.com/cjacker/opensource-toolchain-ch32v?tab=readme-ov-file#debugging)
 - [Project templates](https://github.com/cjacker/opensource-toolchain-ch32v?tab=readme-ov-file#project-templates)
   + ch32v003evt
   + ch32x035evt
