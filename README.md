@@ -212,9 +212,6 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 The latest WCH linux toolchain is v1.92.1 and a lot of changes happened, for example, 'wlink' OpenOCD interface renamed to 'wlinke', and it can support adjust speed now. Since it is still neither opensourced nor upstreamed, I have to put the binary release in this repo, you can download and use it as you like.
 
-I also send a mail to WCH and MounRiver again to request the latest source. If there is still no reply like before, all CH32V related project will be abandoned.
-
-
 **Programming:**
 
 Please wire up 'WCH-LinkE' adapter with your development board (pins as same as SWD) and use 'wch-riscv.cfg' (from MRS Toolchain) provide in this repo. For CH32V003, only 'PD1 / SWDIO' pin is needed.
