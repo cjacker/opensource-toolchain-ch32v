@@ -1,7 +1,5 @@
 # Opensource toolchain for WCH CH32V RISC-V 32bit MCU
 
-**NOTE:** Recently, I send a mail to WCH and MounRiver again, to request the latest source of their forked OpenOCD. I already requested many times before, they even did not responded. If there is still no reply this time, all my CH32V projects/resources will be abandoned and deleted this year.
-
 WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer to [official website](http://www.wch-ic.com/products/categories/47.html?pid=5) for more infomations.
 
 # Table of contents
