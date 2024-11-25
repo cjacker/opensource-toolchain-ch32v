@@ -1,5 +1,7 @@
 # Opensource toolchain for WCH CH32V RISC-V 32bit MCU
 
+**NOTE:** Recently, I send a mail to WCH and MounRiver again, to request the latest source of their forked OpenOCD. I already requested many times before, they even did not responded. If there is still no reply this time, all my CH32V projects/resources will be abandoned and deleted this year.
+
 WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer to [official website](http://www.wch-ic.com/products/categories/47.html?pid=5) for more infomations.
 
 # Table of contents
@@ -205,6 +207,12 @@ make
 sudo make install
 ```
 After installation finished, add '/opt/wch-openocd/bin' to PATH env.
+
+**Use prebuilt WCH official OpenOCD:**
+
+The latest WCH linux toolchain is v1.92.1 and a lot of changes happened, for example, 'wlink' OpenOCD interface renamed to 'wlinke', and it can support adjust speed now. Since it is still neither opensourced nor upstreamed, I have to put the binary release in this repo, you can download and use it as you like.
+
+I also send a mail to WCH and MounRiver again to request the latest source. If there is still no reply like before, all CH32V related project will be abandoned.
 
 
 **Programming:**
