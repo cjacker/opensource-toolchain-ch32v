@@ -24,6 +24,7 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + ch32v307evt
   + ch573evt
   + ch583evt
+  + ch585evt
   + ch592evt
 
 # Hardware prerequist
@@ -109,6 +110,10 @@ For ch571/573, https://www.wch.cn/downloads/CH573EVT_ZIP.html
 
 For ch581/582/583, https://www.wch.cn/downloads/CH583EVT_ZIP.html
 
+For ch584/585, https://www.wch.cn/downloads/CH585EVT_ZIP.html
+
+For ch591/592, https://www.wch.cn/downloads/CH592EVT_ZIP.html
+
 These evt packages contains core SDK and a lot of demo routines but lack Makefile support, here provide [ch32v evt project template and convertor](https://github.com/cjacker/ch32v_evt_makefile_gcc_project_template) and [ch5xx evt project template and convertor](https://github.com/cjacker/ch5xx_riscv_ble_evt_makefile_gcc_project_template) to convert EVT packages to makefile project.
 
 ## For CH32V EVT Packages
@@ -141,7 +146,9 @@ After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and
 
 **Note 1:** These demo only blink LED connect to PA8.
 
-**Note 2:** 'CH573EVT.ZIP' / 'CH583EVT.ZIP' / 'CH592EVT.ZIP' is partial opensourced, there is no source of ISP static library.
+**Note 2:** These evt packages are partial opensourced, there is no source of ISP static library.
+
+**Note 3:** For ch584/585, you have to use [MRS toolchain](http://file-oss.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.92.1.tar.xz) to support 'mcpy' instruction.
 
 # Programming
 
