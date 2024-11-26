@@ -24,6 +24,7 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + ch32v307evt
   + ch573evt
   + ch583evt
+  + ch592evt
 
 # Hardware prerequist
 
@@ -139,11 +140,11 @@ the `<part>` can be obtained with running `./generate_project_from_evt.sh` witho
 
 Then type `make` to build the project.
 
-After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and `build/part.bin`, which can be used for debugging and programming later.
+After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and `build/<part>.bin`, which can be used for debugging and programming later.
 
 **Note 1:** These demo only blink LED connect to PA8.
 
-**Note 2:** 'CH573EVT.ZIP' and 'CH583EVT.ZIP' is partial opensourced, there is no sources of static library 'libISP573.a' and 'libISP583.a'.
+**Note 2:** 'CH573EVT.ZIP' / 'CH583EVT.ZIP' / 'CH592EVT.ZIP' is partial opensourced, there is no source of ISP static library.
 
 # Programming
 
@@ -372,3 +373,6 @@ The pre-converted project templates from WCH official EVT packages and supported
   + ch583
   + ch582
   + ch581
+- [ch592evt](https://github.com/cjacker/ch592evt_gcc_makefile)
+  + ch592
+  + ch591
