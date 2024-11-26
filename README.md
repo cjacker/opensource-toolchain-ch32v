@@ -41,11 +41,11 @@ WCH have an official online store on AliExpress, you can buy EVT board and WCH-L
 * Compiler: gcc
 * SDK: WCH official EVT source package
 * Programmer:
-  - [patched OpenOCD](https://github.com/cjacker/wch-openocd) for RVSWD(2 wire) and SDI(1 wire, used by CH32V003)
-    * [wlink](https://github.com/ch32-rs/wlink) to switch WCH-LinkE adapter to RV mode.
-  - official [WCHISPTool_CMD](http://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html) for ISP mode (close source)
   - [wchisp](https://github.com/ch32-rs/wchisp) for ISP mode
-* Debugger: patched OpenOCD and gdb
+  - [wlink](https://github.com/ch32-rs/wlink) to work with WCH-LinkE.
+  - [WCH OpenOCD](https://github.com/cjacker/wch-openocd) to work with WCH-LinkE.
+  - official [WCHISPTool_CMD](http://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html) for ISP mode (close source)
+* Debugger: WCH OpenOCD and gdb
 
 # RISC-V GNU Toolchain
 
@@ -190,31 +190,38 @@ You may need to press 'RESET' button to reset the board after programming.
 
 A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, please have a try yourself.
 
+## wlink programming
+
+TODO
+
 ## OpenOCD programming
 
-CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-Link' or 'WCH-LinkE' to program/debug. it was implemented in WCH forked OpenOCD as 'wlink' interface. 
+CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-Link' or 'WCH-LinkE' to program and debug. it was implemented in WCH forked OpenOCD as 'wlink' interface.
 
 At first, WCH private-forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Later (2022-03), the [private-forked OpenOCD](https://github.com/kprasadvnsi/riscv-openocd-wch) is opensourced by the request of opensource developers, but no update after that, and it can not support ch32v003 which released later.
 
-When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the old version forked OpenOCD can not support WCH-LinkE.
+When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the old version forked OpenOCD can not support WCH-LinkE and ch32v003.
 
-Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface. but as reported by some users, it can not support WCH-LinkE r0 1v3. I create a [openocd fork](https://github.com/cjacker/wch-openocd), and add WCH-LinkE r0 1v3 and maybe future version support.
+Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface. but as reported by some users, it can not support WCH-LinkE r0 1v3. 
 
-**Build and Install WCH OpenOCD:**
+I put the latest source of WCH OpenOCD [here](https://github.com/cjacker/wch-openocd). It rename 'wlink' interface to 'wlinke', cleaned up various warnings, and can support all known WCH-LinkE debuggers and works with all known CH32V/L/X series MCU.
+
+If it is outdated in future, please contact support@mounriver.com to request the latest sources of WCH OpenOCD. 
+
+
+**Installation:**
 
 ```
 git clone https://github.com/cjacker/wch-openocd
 cd wch-openocd
 
-./configure --prefix=/opt/wch-openocd --program-prefix=wch- --enable-wlink
+./configure --prefix=/opt/wch-openocd --program-prefix=wch- --enable-wlinke --disable-ch347 --disable-linuxgpiod --disable-werror
+
 make
 sudo make install
 ```
 After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
-**Use prebuilt WCH official OpenOCD:**
-
-The latest WCH linux toolchain is v1.92.1 and a lot of changes happened, for example, 'wlink' OpenOCD interface renamed to 'wlinke', and it can support adjust speed now. Since it is still neither opensourced nor upstreamed, I have to put the binary release in this repo, you can download and use it as you like.
 
 **Programming:**
 
