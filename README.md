@@ -8,13 +8,12 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
 - [RISC-V GNU Toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#risc-v-gnu-toolchain)
   + [Building from source](https://github.com/cjacker/opensource-toolchain-ch32v#building-from-source)
   + [Use prebuilt toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#use-prebuilt-toolchain)
-    - [Xpack riscv toolchain](https://github.com/cjacker/opensource-toolchain-ch32v#use-prebuilt-toolchain)
 - [SDK](https://github.com/cjacker/opensource-toolchain-ch32v#sdk)
   + [For CH32V](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch32v-evt-packages)
   + [For CH5XX RISC-V BLE](https://github.com/cjacker/opensource-toolchain-ch32v#for-ch5xx-risc-v-ble)
 - [Programming](https://github.com/cjacker/opensource-toolchain-ch32v#programming)
   + [ISP programming](https://github.com/cjacker/opensource-toolchain-ch32v#isp-programming)
-  + [OpenOCD programming](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming)
+  + [WCH-LinkE programming](https://github.com/cjacker/opensource-toolchain-ch32v#openocd-programming)
 - [Debugging](https://github.com/cjacker/opensource-toolchain-ch32v?tab=readme-ov-file#debugging)
 - [Project templates](https://github.com/cjacker/opensource-toolchain-ch32v?tab=readme-ov-file#project-templates)
   + ch32v003evt
@@ -152,7 +151,7 @@ After building complete, you will get `build/<part>.elf`, `build/<part>.hex` and
 
 ISP programming doesn't need a WCH-LinkE adapter, it program the target device via USB port directly.
 
-WCH officially provides `WCHISPTool_CMD` tool, it is close-source but provide prebuilt cli binaries for windows/macosx/linux platform, you can download it from [wch official website](https://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html).
+### with wchisp
 
 The best opensource WCH ISP tool is [wchisp](https://github.com/ch32-rs/wchisp), which support more parts than other opensource solutions.
 
@@ -180,7 +179,7 @@ Then
 
 - run `lsusb`, you will find something like '4348:55e0 WinChipHead'.
 
-After enter ISP mode, take above blink example as demo (change the LED port according to your board), the programming process as below:
+After enter ISP mode, you can program the target board as:
 
 ```
 sudo wchisp flash build/ch32v.bin
@@ -188,26 +187,76 @@ sudo wchisp flash build/ch32v.bin
 
 You may need to press 'RESET' button to reset the board after programming.
 
-A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, please have a try yourself.
+A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, you can have a try yourself.
 
-## wlink programming
+### with official WCHISPTool_CMD (clsoe source)
 
-TODO
+WCH officially provides `WCHISPTool_CMD` tool, it is close-source but provide prebuilt cli binaries for windows/macosx/linux platform, you can download it from [wch official website](https://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html).
 
-## OpenOCD programming
+```
+=====ISP_Command_Tool=====
 
-CH32V103/203/208/305/307 use a proprietary debugging interface named 'RVSWD' (similar to SWD) and requires a special (but not expensive) usb adapter named 'WCH-Link' or 'WCH-LinkE' to program and debug. it was implemented in WCH forked OpenOCD as 'wlink' interface.
+TOOL VERSION:  V3.70
 
-At first, WCH private-forked OpenOCD is close sourced and only provide binaries compiled for Windows and Linux by MounRiver Studio (an IDE based on eclipse for CH32V developent). Later (2022-03), the [private-forked OpenOCD](https://github.com/kprasadvnsi/riscv-openocd-wch) is opensourced by the request of opensource developers, but no update after that, and it can not support ch32v003 which released later.
+Usage: WCHISPTool_CMD [-pbvecofh]
+  -p --device    device to operate
+  -b --speed     uart speed
+  -v --version   boot/tool version
+  -c --configure configure file path
+  -o --operation operation type
+  -f --flash       flash file path
+  -r --operation write protect option
+```
 
-When CH32V003 released, A new 1-wire proprietary interface named 'SDI' was introduced with CH32V003, it need a 'WCH-LinkE' adapter instead old 'WCH-Link', 'WCH-Link'(without E) adapter can not support this 1-wire debugging interface and the old version forked OpenOCD can not support WCH-LinkE and ch32v003.
+## WCH-LinkE programming
 
-Another developer got the updated WCH OpenOCD sources and create [this OpenOCD fork](https://github.com/karlp/openocd-hacks/), this fork is able to support the 1-wire SDI interface. but as reported by some users, it can not support WCH-LinkE r0 1v3. 
+CH32V103/203/208/305/307 use a proprietary 2-wire debugging interface named 'RVSWD' and requires
+ a special (but very cheap) usb programmer/debugger named 'WCH-Link' or 'WCH-LinkE', and the software support was implemented in WCH forked OpenOCD as 'wlink' interface.
 
-I put the latest source of WCH OpenOCD [here](https://github.com/cjacker/wch-openocd). It rename 'wlink' interface to 'wlinke', cleaned up various warnings, and can support all known WCH-LinkE debuggers and works with all known CH32V/L/X series MCU.
+When CH32V003 released, A new 1-wire interface named 'SDI' was introduced with CH32V003, Only 'WCH-LinkE' can support SDI interface.
 
-If it is outdated in future, please contact support@mounriver.com to request the latest sources of WCH OpenOCD. 
+Before programming with WCH-LinkE, please wire up 'WCH-LinkE' with target board (pins as same as SWD). for CH32V003, only 'PD1 / SWDIO' pin is needed.
 
+Since WCH-LinkE support dual mode (RV and DAP), please make sure your WCH-LinkE adapter is in RV mode. refer to next section to learn how to switch mode of WCH-LinkE with [wlink](https://github.com/ch32-rs/wlink).
+
+### with wlink
+
+
+[wlink](https://github.com/ch32-rs/wlink/) is a command line tool work with WCH-LinkE programmer/debugger.
+
+wlink features:
+- Flash firmware, support Intel HEX, ELF and raw binary format
+- Erase chip
+- Halt, resume, reset support
+- Read chip info
+- Read chip memory(flash)
+- Read/write chip register - very handy for debugging
+- Code-Protect & Code-Unprotect for supported chips
+- Enable or Disable 3.3V, 5V output
+- SDI print support, requires 2.10+ firmware
+- Serial port watching for a smooth development experience
+
+**Installation:**
+```
+cargo install --git https://github.com/ch32-rs/wlink
+```
+
+**WCH-LinkE mode switch:**
+
+Switch WCH-LinkE to RV mode:
+
+```
+wlink mode-switch --rv
+```
+
+**Programming:**
+```
+wlink flash firmware.bin
+```
+
+### with OpenOCD
+
+I put the latest source of WCH official OpenOCD [here](https://github.com/cjacker/wch-openocd). It can work with all known version of WCH-LinkE and support all WCH CH32V/L/X series MCUs.
 
 **Installation:**
 
@@ -220,21 +269,11 @@ cd wch-openocd
 make
 sudo make install
 ```
+
 After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 
 
 **Programming:**
-
-Please wire up 'WCH-LinkE' adapter with your development board (pins as same as SWD) and use 'wch-riscv.cfg' (from MRS Toolchain) provide in this repo. For CH32V003, only 'PD1 / SWDIO' pin is needed.
-
-Since WCH-LinkE support RV/DAP dual mode, please make sure your WCH-LinkE adapter is in RV mode, you can use [wlink](https://github.com/ch32-rs/wlink) to switch mode of WCH-LinkE, to switch to RV mode:
-```
-wlink mode-switch --rv
-
-```
-
-After switch to RV mode
-
 
 ```
 # to erase all
@@ -247,9 +286,7 @@ sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "verify_image xxx.hex\bin\e
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "wlink_reset_resume" -c exit
 ```
 
-Actually, the 'wch-riscv.cfg' is a combination of 'scripts/interface/wlink.cfg' and 'scripts/target/wch-riscv.cfg' of the patched OpenOCD, you can also use these two config files.
-
-For all examples in this repo, you can use 'make program' to program the target device.
+For all examples and project templates in this repo, type `make program` to program the target device.
 
 # Debugging
 
