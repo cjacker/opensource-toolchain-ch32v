@@ -224,6 +224,14 @@ Before programming with WCH-LinkE, please wire up 'WCH-LinkE' with target board 
 
 Since WCH-LinkE support dual mode (RV and DAP), please make sure your WCH-LinkE adapter is in RV mode. refer to next section to learn how to switch mode of WCH-LinkE with [wlink](https://github.com/ch32-rs/wlink).
 
+### update WCH-LinkE firmware to latest version
+
+If you encounter any error when using WCH-LinkE, you should try to update its firmware first. 
+
+Download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html), when connect to target, it will popup a window to ask you update firmware or not.
+
+**NOTE:** WCH-LinkUtility can only run under windows.
+
 ### with wlink
 
 
