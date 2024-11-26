@@ -28,11 +28,8 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
 
 # Hardware prerequist
 
-* A CH32V board or WCH CH5xx RISC-V BLE board
-* A 'WCH-LinkE' adapter
-  - either WCH-LinkE r0-1v2 or 1v3 supported by my forked openocd.
-  - future version of WCH-LinkE may also be supported.
-  - old WCH-Link (without E) adapter can NOT program CH32V003 series.
+* CH32V/X/L board
+* WCH-LinkE adapter (any version should be OK)
 
 WCH have an official online store on AliExpress, you can buy EVT board and WCH-LinkE adapter from it.
 
