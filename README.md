@@ -20,6 +20,7 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + ch32v003evt
   + ch32x035evt
   + ch32v103evt
+  + ch32l103evt
   + ch32v20xevt
   + ch32v307evt
   + ch573evt
@@ -100,6 +101,8 @@ For ch32v003, https://www.wch.cn/downloads/CH32V003EVT_ZIP.html
 For ch32x035, https://www.wch.cn/downloads/CH32X035EVT_ZIP.html
 
 For ch32v103, http://www.wch.cn/downloads/CH32V103EVT_ZIP.html.
+
+For ch32l103, https://www.wch.cn/downloads/CH32L103EVT_ZIP.html
 
 For ch32v20x, https://www.wch.cn/downloads/CH32V20xEVT_ZIP.html
 
@@ -286,6 +289,12 @@ The pre-converted project templates from WCH official EVT packages and supported
   + ch32v103c8u6
   + ch32v103c8t6
   + ch32v103r8t6
+- [ch32l103evt_gcc_makefile](https://github.com/cjacker/ch32l103evt_gcc_makefile)
+  + ch32l103f8p6
+  + ch32l103f8u6
+  + ch32l103g8r6
+  + ch32l103k8u6
+  + ch32l103c8t6
 - [ch32v20xevt_gcc_makefile](https://github.com/cjacker/ch32v20xevt_gcc_makefile)
   + ch32v203f6p6
   + ch32v203g6u6
