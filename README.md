@@ -319,7 +319,9 @@ Transfer rate: 3 KB/sec, 2232 bytes/write.
 Then you can set breakpoints, run, step, continue as usual gdb.
 
 # Project templates
+
 The pre-converted project templates from WCH official EVT packages and supported parts:
+
 - [ch32v003evt_gcc_makefile](https://github.com/cjacker/ch32v003evt_gcc_makefile)
   + ch32v003j4m6
   + ch32v003a4m6
@@ -377,6 +379,9 @@ The pre-converted project templates from WCH official EVT packages and supported
   + ch583
   + ch582
   + ch581
+- [ch585evt](https://github.com/cjacker/ch583evt_gcc_makefile)
+  + ch585
+  + ch584
 - [ch592evt](https://github.com/cjacker/ch592evt_gcc_makefile)
   + ch592
   + ch591
