@@ -493,13 +493,15 @@ wlink flash WCH-LinkE-APP-IAP.bin
 
 # How to rescue bricked CH32V
 
-**NOTE: it can also rescue a bricked WCH-LinkE.**
+**NOTE: below steps can also rescue a bricked WCH-LinkE.**
 
-If accidently programing the wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, the ch32v will be bricked. And it can not be probed and programmed by WCH-LinkE anymore.
+If accidently programing the wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, or system core clock set to wrong value, the ch32v may not be probed and programmed by WCH-LinkE anymore.
 
-To rescue a bricked CH32V, we should erase the code flash totally.
+Please check ISP mode first, it may still works. If not, you have a bricked CH32V now...
 
-You need prepare a workable WCH-LinkE (not WCH-Link) and download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Of course, you have to use Windows here.
+To rescue a bricked CH32V, the code flash need to be erased.
+
+You need prepare a workable WCH-LinkE (not WCH-Link) and download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Of course, you have to use Windows with WCH-LinkUtility.
 
 ## Clear all code flash by pin NRST
 
