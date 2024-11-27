@@ -432,9 +432,37 @@ At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-
 
 WCH-Link use CH549 mcu, it's a 8051 MCU and can be programmed by ISP under linux.
 
-To program CH549 mcu, we need short DP pin and VCC pin, then power up to enter ISP mode.
+To program CH549 mcu, we need install [ch552tool](https://github.com/MarsTechHAN/ch552tool) first. And short DP pin (P5.1) and 3v3 VCC pin when power up to enter ISP mode.
 
-## for WCH-LinkE
+After enter ISP mode, `lsusb` like:
+
+```
+Bus 001 Device 020: ID 4348:55e0 WinChipHead
+```
+
+Then erase the flash as:
+```
+# sudo ch55xtool -e -c
+Found CH549 with SubId:18
+BTVER:02.40
+UID:64-63-49-43-00-00-AD-A6
+Erasing chip data flash. Done.
+Erasing chip flash. Done.
+Finalize communication. Done.
+```
+
+Then program `WCH-Link_APP_IAP_RV.bin` or `WCH-Link_APP_IAP_ARM.bin` as:
+```
+sudo ch55xtool -f WCH-Link_APP_IAP_RV.bin
+Found CH549 with SubId:18
+BTVER:02.40
+UID:64-63-49-43-00-00-AD-A6
+Erasing chip flash. Done.
+Flashing chip. Done.
+Finalize communication. Done.
+```
+
+## update firmware of WCH-LinkE
 
 WCH-LinkE use CH32V305fbp6, you need another workable WCH-LinkE to program it.
 
