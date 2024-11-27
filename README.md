@@ -32,11 +32,11 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
 # Hardware prerequist
 
 * CH32V/X/L board
-* WCH-LinkE with latest firmware
-* WCH-Link with latest firmware
-  - WCH-Link is deprecated since it can not support 1-wire SDI interface used by ch32v003
+* WCH-LinkE(ch32v305fbp6 based) or WCH-Link(ch549 based), with latest firmware
 
-WCH have an official online store on AliExpress, you can buy EVT board and WCH-LinkE adapter from it.
+**Note:** WCH-Link does not support 1-wire SDI interface used by ch32v003, you need a WCH-LinkE to program/debug ch32v003.
+
+WCH have an official online store on AliExpress, you can buy the EVT boards and WCH-LinkE from it.
 
 # Toolchain overview
 
@@ -81,6 +81,22 @@ export PATH=/opt/riscv-gnu-toolchain/bin:$PATH
 
 ## Use prebuilt toolchain
 
+### MRS toolchain
+MounRiver Studio (WCH official IDE) provide a standalone linux toolchain that you can use directly, especially for some chips with WCH private RISCV instructions, for example CH584/585, you have to use [MRS toolchain](http://www.mounriver.com/download), up to now, the currect version is v1.92.1, you can download it from [here](http://file-oss.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.92.1.tar.xz).
+
+Download and extract it as:
+```
+wget http://file-oss.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.92.1.tar.xz
+sudo mkdir -p /opt/MRS_toolchain
+sudo tar xf MRS_Toolchain_Linux_x64_V1.92.1.tar.xz -C /opt/MRS_toolchain --strip-components=1
+```
+
+And add `/opt/MRS_toolchain/RISC-V_Embedded_GCC12/bin` to your PATH env.
+
+**NOTE**, the target triplet of MRS toolchain is **`riscv-none-elf`**.
+
+
+### xpack riscv toolchain
 [xpack-dev-tools](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/) provde a prebuilt toolchain for riscv. you can download it from https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/. The lastest version is '14.2.0', download and extract it as:
 
 ```
@@ -397,3 +413,7 @@ The pre-converted project templates from WCH official EVT packages and supported
 - [ch592evt](https://github.com/cjacker/ch592evt_gcc_makefile)
   + ch592
   + ch591
+
+# How to update firmware of WCH-Link/E
+
+# How to rescure a bricked WCH-Link/E
