@@ -27,7 +27,7 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + ch585evt
   + ch592evt
 - [How to update firmware of WCH-Link/E]()
-- [How to rescure bricked CH32V and WCH-Link/E]()
+- [How to rescue bricked CH32V and WCH-Link/E]()
 
 # Hardware prerequist
 
@@ -417,6 +417,7 @@ The pre-converted project templates from WCH official EVT packages and supported
 # How to update firmware of WCH-Link/E
 
 ## download latest firmwares
+
 Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir:
 ```
 Firmware_Link/
@@ -485,6 +486,10 @@ Hold the "IAP" button on target WCH LinkE and plug WCH LinkE to PC USB port, usi
 ```
 wlink flash WCH-LinkE-APP-IAP.bin 
 ```
+
+
+**NOTE:** If you have windows system, you can always update WCH-Link/WCH-LinkE firmware to latest version by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). it will popup a window to ask you update or not when connect to target.
+
 
 # How to rescue bricked CH32V
 
