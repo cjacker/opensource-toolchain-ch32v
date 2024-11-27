@@ -27,7 +27,7 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + ch585evt
   + ch592evt
 - [How to update firmware of WCH-Link/E]()
-- [How to rescure a bricked WCH-Link/E]()
+- [How to rescure bricked CH32V and WCH-Link/E]()
 
 # Hardware prerequist
 
@@ -416,4 +416,92 @@ The pre-converted project templates from WCH official EVT packages and supported
 
 # How to update firmware of WCH-Link/E
 
-# How to rescure a bricked WCH-Link/E
+## download latest firmwares
+Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir:
+```
+Firmware_Link/
+├── WCH-Link_APP_IAP_ARM.bin   # DAP firmware for WCH-Link
+├── WCH-Link_APP_IAP_RV.bin    # RVSWD firmware for WCH-Link
+├── WCH-LinkE-APP-IAP.bin      # firmware for WCH-LinkE
+
+```
+
+At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-LinkE, but due to the firmware size increased, it doesn't support dual mode anymore. MounRiver Studio also flash the corresponding firmware everytime when you toggle the mode of WCH-Link.
+
+## update firmware of WCH-Link
+
+WCH-Link use CH549 mcu, it's a 8051 MCU and can be programmed by ISP under linux.
+
+To program CH549 mcu, we need short DP pin and VCC pin, then power up to enter ISP mode.
+
+## for WCH-LinkE
+
+WCH-LinkE use CH32V305fbp6, you need another workable WCH-LinkE to program it.
+
+Wire up WCH-LinkE and the target WCH-LinkE as:
+                                           
+ +-----------+            +-----------+
+ |           |----3v3-----|           |
+ |           |            |           |
+ |           |----gnd-----|  Target   |
+ | WCH LinkE |            | WCH LinkE |
+ |           |----dio-----|           |
+ |           |            |           |
+ |           |----clk-----|           |
+ +-----------+            +-----------+
+
+
+Hold the "IAP" button on target WCH LinkE and plug WCH LinkE to PC USB port, using wlink to program it as:
+
+```
+wlink flash WCH-LinkE-APP-IAP.bin 
+```
+
+# How to rescue bricked CH32V
+
+**NOTE: it can also rescue a bricked WCH-LinkE.**
+
+If accidently programing the wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, the ch32v will be bricked. And it can not be probed and programmed by WCH-LinkE or ISP mode anymore.
+
+To rescue a bricked CH32V, we should erase the flash totally. 
+
+You need prepare a workable WCH-LinkE (not WCH-Link) and download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html).
+
+## Clear all code flash by pin NRST
+
+Wire up WCH-LinkE and bricked CH32V as:
+                                           
+ +------------+            +---------------+
+ |            |----3v3-----|               |
+ |            |            |               |
+ |            |----gnd-----|               |
+ |            |            |               |
+ | WCH-LinkE  |----dio-----| bricked CH32V |
+ |            |            |               |
+ |            |----clk-----|               |
+ |            |            |               |
+ |            |----nrst----|               |
+ +------------+            +---------------+
+
+
+Open WCH LinkUtility and Click 'Clear All Code Flash By Pin NRST' will erase code flash of bricked CH32V.
+
+If the bricked board did not export NRST pin, you can solder a wire to MCU NRST pin directly.
+
+## Clear all code flash by power off
+
+This way don't require NRST pin, wire up WCH-LinkE and bricked CH32V as:
+
+ +------------+            +---------------+
+ |            |            |               |
+ |            |            |               |
+ |            |----dio-----|               |
+ |            |            |               |
+ | WCH-LinkE  |            | bricked CH32V |
+ |            |            |               |
+ |            |----clk-----|               |
+ |            |            |               |
+ |            |            |               |
+ +------------+            +---------------+
+
+Open WCH LinkUtility and click 'Clear All Code Flash By Power Off'. After clicked, power up the bricked CH32V as quick as possible, for example, plug the usb cable to PC host quickly. You may try several times to succeed and it will erase all code flash of bricked CH32V.
