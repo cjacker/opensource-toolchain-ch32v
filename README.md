@@ -26,11 +26,15 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + ch583evt
   + ch585evt
   + ch592evt
+- [How to update firmware of WCH-Link/E]()
+- [How to rescure a bricked WCH-Link/E]()
 
 # Hardware prerequist
 
 * CH32V/X/L board
-* WCH-LinkE adapter (any version should be OK)
+* WCH-LinkE with latest firmware
+* WCH-Link with latest firmware
+  - WCH-Link is deprecated since it can not support 1-wire SDI interface used by ch32v003
 
 WCH have an official online store on AliExpress, you can buy EVT board and WCH-LinkE adapter from it.
 
