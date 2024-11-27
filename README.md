@@ -416,7 +416,11 @@ The pre-converted project templates from WCH official EVT packages and supported
 
 # How to update firmware of WCH-Link/E
 
-## download latest firmwares
+**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). it will popup a window to ask you update or not when connect to the target.
+
+If you don't use windows, please follow below steps to update the firmware.
+
+## Download latest firmwares
 
 Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir:
 ```
@@ -429,7 +433,7 @@ Firmware_Link/
 
 At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-LinkE, but due to the firmware size increased, it doesn't support dual mode anymore. MounRiver Studio also flash the corresponding firmware everytime when you toggle the mode of WCH-Link.
 
-## update firmware of WCH-Link
+## Update firmware of WCH-Link
 
 WCH-Link use CH549 mcu, it's a 8051 MCU and can be programmed by ISP under linux.
 
@@ -463,7 +467,7 @@ Flashing chip. Done.
 Finalize communication. Done.
 ```
 
-## update firmware of WCH-LinkE
+## Update firmware of WCH-LinkE
 
 WCH-LinkE use CH32V305fbp6, you need another workable WCH-LinkE to program it.
 
@@ -487,19 +491,15 @@ Hold the "IAP" button on target WCH LinkE and plug WCH LinkE to PC USB port, usi
 wlink flash WCH-LinkE-APP-IAP.bin 
 ```
 
-
-**NOTE:** If you have windows system, you can always update WCH-Link/WCH-LinkE firmware to latest version by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). it will popup a window to ask you update or not when connect to target.
-
-
 # How to rescue bricked CH32V
 
 **NOTE: it can also rescue a bricked WCH-LinkE.**
 
-If accidently programing the wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, the ch32v will be bricked. And it can not be probed and programmed by WCH-LinkE or ISP mode anymore.
+If accidently programing the wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, the ch32v will be bricked. And it can not be probed and programmed by WCH-LinkE anymore.
 
-To rescue a bricked CH32V, we should erase the code flash totally. 
+To rescue a bricked CH32V, we should erase the code flash totally.
 
-You need prepare a workable WCH-LinkE (not WCH-Link) and download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html).
+You need prepare a workable WCH-LinkE (not WCH-Link) and download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Of course, you have to use Windows here.
 
 ## Clear all code flash by pin NRST
 
