@@ -27,7 +27,7 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + ch585evt
   + ch592evt
 - [How to update firmware of WCH-Link/E](#how-to-update-firmware-of-wch-linke)
-- [How to rescue a bricked CH32V and WCH-Link/E](#how-to-rescue-bricked-ch32v)
+- [How to rescue a bricked CH32V and WCH-LinkE](#how-to-rescue-bricked-ch32v)
 
 # Hardware prerequist
 
