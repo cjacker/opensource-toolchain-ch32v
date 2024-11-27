@@ -463,7 +463,7 @@ wlink flash WCH-LinkE-APP-IAP.bin
 
 If accidently programing the wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, the ch32v will be bricked. And it can not be probed and programmed by WCH-LinkE or ISP mode anymore.
 
-To rescue a bricked CH32V, we should erase the flash totally. 
+To rescue a bricked CH32V, we should erase the code flash totally. 
 
 You need prepare a workable WCH-LinkE (not WCH-Link) and download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html).
 
@@ -484,7 +484,15 @@ Wire up WCH-LinkE and bricked CH32V as:
  +------------+            +---------------+
 
 
-Open WCH LinkUtility and Click 'Clear All Code Flash By Pin NRST' will erase code flash of bricked CH32V.
+Open WCH LinkUtility and select the correct MCU series as:
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/cjacker/opensource-toolchain-ch32v/refs/heads/main/assets/select_ch32v30x.png" width="70%"/></p>
+
+Then click 'Clear All Code Flash By Pin NRST' will erase code flash of bricked CH32V:
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/cjacker/opensource-toolchain-ch32v/refs/heads/main/assets/erase_by_nrst.png" width="70%"/></p>
 
 If the bricked board did not export NRST pin, you can solder a wire to MCU NRST pin directly.
 
@@ -504,4 +512,9 @@ This way don't require NRST pin, wire up WCH-LinkE and bricked CH32V as:
  |            |            |               |
  +------------+            +---------------+
 
-Open WCH LinkUtility and click 'Clear All Code Flash By Power Off'. After clicked, power up the bricked CH32V as quick as possible, for example, plug the usb cable to PC host quickly. You may try several times to succeed and it will erase all code flash of bricked CH32V.
+Open WCH LinkUtility and click 'Clear All Code Flash By Power Off'. 
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/cjacker/opensource-toolchain-ch32v/refs/heads/main/assets/erase_by_poweroff.png" width="70%"/></p>
+
+After clicked, power up the bricked CH32V as quick as possible, for example, plug the usb cable to PC host quickly. You may try several times to succeed and it will erase all code flash of bricked CH32V.
