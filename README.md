@@ -439,7 +439,7 @@ To program CH549 mcu, we need short DP pin and VCC pin, then power up to enter I
 WCH-LinkE use CH32V305fbp6, you need another workable WCH-LinkE to program it.
 
 Wire up WCH-LinkE and the target WCH-LinkE as:
-                                           
+```
  +-----------+            +-----------+
  |           |----3v3-----|           |
  |           |            |           |
@@ -449,6 +449,7 @@ Wire up WCH-LinkE and the target WCH-LinkE as:
  |           |            |           |
  |           |----clk-----|           |
  +-----------+            +-----------+
+```                                           
 
 
 Hold the "IAP" button on target WCH LinkE and plug WCH LinkE to PC USB port, using wlink to program it as:
@@ -470,7 +471,7 @@ You need prepare a workable WCH-LinkE (not WCH-Link) and download [WCH-LinkUtili
 ## Clear all code flash by pin NRST
 
 Wire up WCH-LinkE and bricked CH32V as:
-                                           
+```
  +------------+            +---------------+
  |            |----3v3-----|               |
  |            |            |               |
@@ -482,6 +483,7 @@ Wire up WCH-LinkE and bricked CH32V as:
  |            |            |               |
  |            |----nrst----|               |
  +------------+            +---------------+
+```                                           
 
 
 Open WCH LinkUtility and select the correct MCU series as:
@@ -499,7 +501,7 @@ If the bricked board did not export NRST pin, you can solder a wire to MCU NRST 
 ## Clear all code flash by power off
 
 This way don't require NRST pin, wire up WCH-LinkE and bricked CH32V as:
-
+```
  +------------+            +---------------+
  |            |            |               |
  |            |            |               |
@@ -511,6 +513,7 @@ This way don't require NRST pin, wire up WCH-LinkE and bricked CH32V as:
  |            |            |               |
  |            |            |               |
  +------------+            +---------------+
+```
 
 Open WCH LinkUtility and click 'Clear All Code Flash By Power Off'. 
 
