@@ -44,9 +44,8 @@ WCH have an official online store on AliExpress, you can buy the EVT boards and 
 * SDK: WCH official EVT source package
 * Programmer:
   - [wchisp](https://github.com/ch32-rs/wchisp) for ISP mode
-  - [wlink](https://github.com/ch32-rs/wlink) to work with WCH-LinkE.
-  - [WCH OpenOCD](https://github.com/cjacker/wch-openocd) to work with WCH-LinkE.
-  - official [WCHISPTool_CMD](http://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html) for ISP mode (close source)
+  - [wlink](https://github.com/ch32-rs/wlink) for WCH-LinkE.
+  - [WCH OpenOCD](https://github.com/cjacker/wch-openocd) for WCH-LinkE.
 * Debugger: WCH OpenOCD and gdb
 
 # RISC-V GNU Toolchain
@@ -82,7 +81,7 @@ export PATH=/opt/riscv-gnu-toolchain/bin:$PATH
 ## Use prebuilt toolchain
 
 ### MRS toolchain
-MounRiver Studio (WCH official IDE) provide a standalone linux toolchain that you can use directly, especially for some chips with WCH private RISCV instructions, for example CH584/585, you have to use [MRS toolchain](http://www.mounriver.com/download), up to now, the currect version is v1.92.1, you can download it from [here](http://file-oss.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.92.1.tar.xz).
+MounRiver Studio (WCH official IDE) provide a standalone linux toolchain that you can use directly, especially for some chips with WCH private RISCV instructions, for example CH584/585, you have to use [MRS toolchain](http://www.mounriver.com/download). Up to now, the currect version is v1.92.1, you can download it from [here](http://file-oss.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.92.1.tar.xz).
 
 Download and extract it as:
 ```
@@ -214,25 +213,6 @@ You may need to press 'RESET' button to reset the board after programming.
 
 A forked version of [ch55xtool](https://github.com/karlp/ch552tool) can also support program WCH CH32V103/307, you can have a try yourself.
 
-### with official WCHISPTool_CMD (clsoe source)
-
-WCH officially provides `WCHISPTool_CMD` tool, it is close-source but provide prebuilt cli binaries for windows/macosx/linux platform, you can download it from [wch official website](https://wch-ic.com/downloads/WCHISPTool_CMD_ZIP.html).
-
-```
-=====ISP_Command_Tool=====
-
-TOOL VERSION:  V3.70
-
-Usage: WCHISPTool_CMD [-pbvecofh]
-  -p --device    device to operate
-  -b --speed     uart speed
-  -v --version   boot/tool version
-  -c --configure configure file path
-  -o --operation operation type
-  -f --flash       flash file path
-  -r --operation write protect option
-```
-
 ## WCH-LinkE programming
 
 CH32V103/203/208/305/307 use a proprietary 2-wire debugging interface named 'RVSWD' and requires
@@ -240,7 +220,7 @@ CH32V103/203/208/305/307 use a proprietary 2-wire debugging interface named 'RVS
 
 When CH32V003 released, A new 1-wire interface named 'SDI' was introduced with CH32V003, Only 'WCH-LinkE' can support SDI interface.
 
-Before programming with WCH-LinkE, please wire up 'WCH-LinkE' with target board (pins as same as SWD). for CH32V003, only 'PD1 / SWDIO' pin is needed.
+Before programming with WCH-LinkE, please wire up 'WCH-LinkE' with target board (pins as same as SWD). for CH32V003, only the 'PD1 / SWDIO' pin is needed.
 
 Since WCH-LinkE support dual mode (RV and DAP), please make sure your WCH-LinkE adapter is in RV mode. refer to next section to learn how to switch mode of WCH-LinkE with [wlink](https://github.com/ch32-rs/wlink).
 
@@ -253,7 +233,6 @@ Download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html
 **NOTE:** WCH-LinkUtility can only run under windows.
 
 ### with wlink
-
 
 [wlink](https://github.com/ch32-rs/wlink/) is a command line tool work with WCH-LinkE programmer/debugger.
 
@@ -289,6 +268,8 @@ wlink flash firmware.bin
 
 ### with OpenOCD
 
+`wlink` is good enough to work with WCH-Link/E, this section is not recommended.
+
 I put the latest source of WCH official OpenOCD [here](https://github.com/cjacker/wch-openocd). It can work with all known version of WCH-LinkE and support all WCH CH32V/L/X series MCUs.
 
 **Installation:**
@@ -312,14 +293,12 @@ After installation finished, add '/opt/wch-openocd/bin' to PATH env.
 # to erase all
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "flash erase_sector wch_riscv 0 last " -c exit
 # to program and verify
-sudo wch-openocd -f wch-riscv.cfg  -c init -c halt  -c "program xxx.hex\bin\elf verify" -c exit
+sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "program xxx.hex\bin\elf verify" -c exit
 # to verify
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "verify_image xxx.hex\bin\elf" -c exit
 # to reset/resume
 sudo wch-openocd -f wch-riscv.cfg -c init -c halt -c "wlink_reset_resume" -c exit
 ```
-
-For all examples and project templates in this repo, type `make program` to program the target device.
 
 # Debugging
 
@@ -418,13 +397,11 @@ The pre-converted project templates from WCH official EVT packages and supported
 
 **NOTE: below steps can also rescue a bricked WCH-LinkE.**
 
-If accidently programing the wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, or system core clock set to wrong value, the ch32v may not be probed and programmed by WCH-LinkE anymore.
+If accidently programing wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, or system core clock set to wrong value, the ch32v may not be probed and programmed by WCH-LinkE anymore.
 
-Please check ISP mode first, it may still work. If don't have ISP port or not work, you have a bricked CH32V now...
+Please check ISP mode first, it may still work. If the target board don't have ISP port or ISP not works anymore, you have a bricked CH32V now...
 
-To rescue a bricked CH32V, the code flash need to be erased.
-
-You need prepare a workable WCH-LinkE (not WCH-Link) and install [wlink](https://github.com/ch32-rs/wlink).
+To rescue a bricked CH32V, you need erase all code flash.
 
 ## Clear all code flash by pin NRST
 
@@ -498,11 +475,11 @@ Open WCH LinkUtility and click 'Clear All Code Flash By Power Off'.
 
 # How to update firmware of WCH-Link/E
 
-**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware online by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html).
+**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware online by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Currently, wlink didn't support update firmware online. 
 
-If you don't use windows, please follow below steps to update the firmware of WCH-Link/LinkE
+If you don't use windows, please follow below steps to update the firmware of WCH-Link/LinkE:
 
-## Download latest firmwares
+## Get the latest firmware
 
 Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir:
 ```
@@ -517,9 +494,9 @@ At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-
 
 ## Update firmware of WCH-Link
 
-WCH-Link use CH549 mcu, it's 8051 and can be programmed by ISP under linux.
+WCH-Link use CH549 MCU, it can be programmed by ISP under linux.
 
-To program CH549 mcu, we need install [ch552tool](https://github.com/MarsTechHAN/ch552tool) first. And short DP pin (P5.1) and 3v3 VCC pin when power up to enter ISP mode.
+To program CH549, we need install [ch552tool](https://github.com/MarsTechHAN/ch552tool) first. And short DP pin (P5.1) and 3v3 VCC pin when power up to enter ISP mode.
 
 After enter ISP mode, `lsusb` like:
 
@@ -574,5 +551,4 @@ Hold the "IAP" button of target WCH LinkE down and plug WCH LinkE to PC USB port
 wlink erase --method pin-rst --speed low --chip CH32V30X
 wlink flash WCH-LinkE-APP-IAP.bin 
 ```
-
 
