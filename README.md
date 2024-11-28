@@ -26,8 +26,8 @@ WCH CH32V series is a family of General-Purpose 32bit RISC-V MCU, please refer t
   + ch583evt
   + ch585evt
   + ch592evt
-- [How to update firmware of WCH-Link/E](#how-to-update-firmware-of-wch-linke)
 - [How to rescue a bricked CH32V and WCH-LinkE](#how-to-rescue-bricked-ch32v)
+- [How to update firmware of WCH-Link/E](#how-to-update-firmware-of-wch-linke)
 
 # Hardware prerequist
 
@@ -414,83 +414,6 @@ The pre-converted project templates from WCH official EVT packages and supported
   + ch592
   + ch591
 
-# How to update firmware of WCH-Link/E
-
-**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html).
-
-If you don't use windows, please follow below steps to update the firmware of WCH-Link/LinkE
-
-## Download latest firmwares
-
-Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir:
-```
-Firmware_Link/
-├── WCH-Link_APP_IAP_ARM.bin   # ARM DAP firmware for WCH-Link
-├── WCH-Link_APP_IAP_RV.bin    # RV SWD firmware for WCH-Link
-├── WCH-LinkE-APP-IAP.bin      # firmware for WCH-LinkE
-
-```
-
-At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-LinkE, but due to the firmware size increased, it doesn't support dual mode anymore. MounRiver Studio also flash the corresponding firmware everytime when you toggle the mode of WCH-Link.
-
-## Update firmware of WCH-Link
-
-WCH-Link use CH549 mcu, it's 8051 and can be programmed by ISP under linux.
-
-To program CH549 mcu, we need install [ch552tool](https://github.com/MarsTechHAN/ch552tool) first. And short DP pin (P5.1) and 3v3 VCC pin when power up to enter ISP mode.
-
-After enter ISP mode, `lsusb` like:
-
-```
-Bus 001 Device 020: ID 4348:55e0 WinChipHead
-```
-
-Then erase the flash as:
-```
-# sudo ch55xtool -e -c
-Found CH549 with SubId:18
-BTVER:02.40
-UID:64-63-49-43-00-00-AD-A6
-Erasing chip data flash. Done.
-Erasing chip flash. Done.
-Finalize communication. Done.
-```
-
-Then program `WCH-Link_APP_IAP_RV.bin` or `WCH-Link_APP_IAP_ARM.bin` as:
-```
-sudo ch55xtool -f WCH-Link_APP_IAP_RV.bin
-Found CH549 with SubId:18
-BTVER:02.40
-UID:64-63-49-43-00-00-AD-A6
-Erasing chip flash. Done.
-Flashing chip. Done.
-Finalize communication. Done.
-```
-
-## Update firmware of WCH-LinkE
-
-WCH-LinkE use CH32V305fbp6, you need another workable WCH-LinkE to program it.
-
-Wire up WCH-LinkE and the target WCH-LinkE as:
-```
- +-----------+            +-----------+
- |           |----3v3-----|           |
- |           |            |           |
- |           |----gnd-----|  Target   |
- | WCH LinkE |            | WCH LinkE |
- |           |----dio-----|           |
- |           |            |           |
- |           |----clk-----|           |
- +-----------+            +-----------+
-```                                           
-
-
-Hold the "IAP" button of target WCH LinkE down and plug WCH LinkE to PC USB port, using wlink to program it as:
-
-```
-wlink flash WCH-LinkE-APP-IAP.bin 
-```
-
 # How to rescue bricked CH32V
 
 **NOTE: below steps can also rescue a bricked WCH-LinkE.**
@@ -571,4 +494,85 @@ Open WCH LinkUtility and click 'Clear All Code Flash By Power Off'.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/cjacker/opensource-toolchain-ch32v/refs/heads/main/assets/erase_by_poweroff.png" width="70%"/></p>
+
+
+# How to update firmware of WCH-Link/E
+
+**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware online by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html).
+
+If you don't use windows, please follow below steps to update the firmware of WCH-Link/LinkE
+
+## Download latest firmwares
+
+Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir:
+```
+Firmware_Link/
+├── WCH-Link_APP_IAP_ARM.bin   # ARM DAP firmware for WCH-Link
+├── WCH-Link_APP_IAP_RV.bin    # RV SWD firmware for WCH-Link
+├── WCH-LinkE-APP-IAP.bin      # firmware for WCH-LinkE
+
+```
+
+At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-LinkE, but due to the firmware size increased, it doesn't support dual mode anymore. MounRiver Studio also flash the corresponding firmware everytime when you toggle the mode of WCH-Link.
+
+## Update firmware of WCH-Link
+
+WCH-Link use CH549 mcu, it's 8051 and can be programmed by ISP under linux.
+
+To program CH549 mcu, we need install [ch552tool](https://github.com/MarsTechHAN/ch552tool) first. And short DP pin (P5.1) and 3v3 VCC pin when power up to enter ISP mode.
+
+After enter ISP mode, `lsusb` like:
+
+```
+Bus 001 Device 020: ID 4348:55e0 WinChipHead
+```
+
+Then erase the flash as:
+```
+# sudo ch55xtool -e -c
+Found CH549 with SubId:18
+BTVER:02.40
+UID:64-63-49-43-00-00-AD-A6
+Erasing chip data flash. Done.
+Erasing chip flash. Done.
+Finalize communication. Done.
+```
+
+Then program `WCH-Link_APP_IAP_RV.bin` or `WCH-Link_APP_IAP_ARM.bin` as:
+```
+sudo ch55xtool -f WCH-Link_APP_IAP_RV.bin
+Found CH549 with SubId:18
+BTVER:02.40
+UID:64-63-49-43-00-00-AD-A6
+Erasing chip flash. Done.
+Flashing chip. Done.
+Finalize communication. Done.
+```
+
+## Update firmware of WCH-LinkE
+
+WCH-LinkE use CH32V305fbp6, you need another workable WCH-LinkE to program it.
+
+Wire up WCH-LinkE and the target WCH-LinkE as:
+```
+ +------------+            +---------------+
+ |            |----3v3-----|               |
+ |            |            |               |
+ |            |----gnd-----|               |
+ |            |            |               |
+ | WCH-LinkE  |----dio-----| bricked CH32V |
+ |            |            |               |
+ |            |----clk-----|               |
+ |            |            |               |
+ |            |----nrst----|               |
+ +------------+            +---------------+
+```                                           
+
+Hold the "IAP" button of target WCH LinkE down and plug WCH LinkE to PC USB port, using wlink to program it as:
+
+```
+wlink erase --method pin-rst --speed low --chip CH32V30X
+wlink flash WCH-LinkE-APP-IAP.bin 
+```
+
 
