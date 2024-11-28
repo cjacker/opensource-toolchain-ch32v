@@ -522,7 +522,7 @@ Wire up WCH-LinkE and bricked CH32V as:
 
 Run:
 ```
-wlink erase --method pin-rst --speed 400kHz --chip <chip type>
+wlink erase --method pin-rst --speed low --chip <chip type>
 ```
 Possible value of chip type:  CH32V103, CH57X, CH56X, CH32V20X, CH32V30X, CH582, CH32V003, CH8571, CH59X, CH643, CH32X035, CH32L103, CH641, CH585, CH564, CH32V007, CH645, CH32V317
 
@@ -559,7 +559,7 @@ This way don't require NRST pin, wire up WCH-LinkE and bricked CH32V as:
 
 Run:
 ```
-wlink erase --method power-off --speed 400kHz --chip <chip type>
+wlink erase --method power-off --speed low --chip <chip type>
 ```
 Possible value of chip type:  CH32V103, CH57X, CH56X, CH32V20X, CH32V30X, CH582, CH32V003, CH8571, CH59X, CH643, CH32X035, CH32L103, CH641, CH585, CH564, CH32V007, CH645, CH32V317
 
