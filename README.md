@@ -416,17 +416,17 @@ The pre-converted project templates from WCH official EVT packages and supported
 
 # How to update firmware of WCH-Link/E
 
-**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). it will popup a window to ask you update or not when connect to the target.
+**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html).
 
-If you don't use windows, please follow below steps to update the firmware.
+If you don't use windows, please follow below steps to update the firmware of WCH-Link/LinkE
 
 ## Download latest firmwares
 
 Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir:
 ```
 Firmware_Link/
-├── WCH-Link_APP_IAP_ARM.bin   # DAP firmware for WCH-Link
-├── WCH-Link_APP_IAP_RV.bin    # RVSWD firmware for WCH-Link
+├── WCH-Link_APP_IAP_ARM.bin   # ARM DAP firmware for WCH-Link
+├── WCH-Link_APP_IAP_RV.bin    # RV SWD firmware for WCH-Link
 ├── WCH-LinkE-APP-IAP.bin      # firmware for WCH-LinkE
 
 ```
@@ -435,7 +435,7 @@ At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-
 
 ## Update firmware of WCH-Link
 
-WCH-Link use CH549 mcu, it's a 8051 MCU and can be programmed by ISP under linux.
+WCH-Link use CH549 mcu, it's 8051 and can be programmed by ISP under linux.
 
 To program CH549 mcu, we need install [ch552tool](https://github.com/MarsTechHAN/ch552tool) first. And short DP pin (P5.1) and 3v3 VCC pin when power up to enter ISP mode.
 
@@ -485,7 +485,7 @@ Wire up WCH-LinkE and the target WCH-LinkE as:
 ```                                           
 
 
-Hold the "IAP" button on target WCH LinkE and plug WCH LinkE to PC USB port, using wlink to program it as:
+Hold the "IAP" button of target WCH LinkE down and plug WCH LinkE to PC USB port, using wlink to program it as:
 
 ```
 wlink flash WCH-LinkE-APP-IAP.bin 
