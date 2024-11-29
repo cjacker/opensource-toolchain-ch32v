@@ -491,7 +491,7 @@ Firmware_Link/
 
 ```
 
-At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-LinkE, but due to the firmware size increased, it doesn't support dual mode anymore. MounRiver Studio also flash the corresponding firmware everytime when you toggle the mode of WCH-Link.
+At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-LinkE, but due to the firmware size increased, it doesn't support dual mode anymore. MounRiver Studio also flash the corresponding firmware everytime when you toggle the mode of WCH-Link(without E).
 
 ## Update firmware of WCH-Link
 
@@ -548,13 +548,14 @@ Wire up WCH-LinkE and the target WCH-LinkE as:
 
 Hold the "IAP" button of "target WCH-LinkE" down and plug WCH-LinkE to PC USB port, it will force the "target WCH-LinkE" enter IAP mode.
 
-Official WCH-LinkE has a plastic case, you can not press the IAP button unless break the case. I make a [toggle IAP mode tool](https://github.com/cjacker/opensource-toolchain-ch32v/tree/main/firmwares/toggle_iap_mode), you can use it to toggle IAP mode of WCH-LinkE.
+> IAP mode is not required to program the target WCH-LinkE, but under IAP mode, the target WCH-LinkE released the ocuppied pins and make itself able to be programmed as common CH32V dev board.
+
+Official WCH-LinkE has a plastic case, it prevent user to press the IAP button accidently unless break the case. I make a [toggle IAP mode tool](https://github.com/cjacker/opensource-toolchain-ch32v/tree/main/firmwares/toggle_iap_mode), you can use it to switch WCH-LinkE to IAP mode from commandline.
 
 ```
 cd firmwares/toggle_iap_mode
 make
 ```
-
 to enter IAP mode, plug the "target WCH-LinkE" to PC USB port:
 ```
 ./switch_to_iap_mode
@@ -564,11 +565,13 @@ to quit IAP mode:
 ./quit_iap_mode
 ```
 
-After set "target WCH-LinkE" to IAP mode, unplug it. you don't need to hold the IAP button down when plug another WCH-LinkE directly to PC USB port.
+After switch "target WCH-LinkE" to IAP mode, unplug it. Then you don't need to hold the IAP button of "target WCH-LinkE" down when plug another WCH-LinkE directly to PC USB port.
 
 Then update the "target WCH-LinkE" firmware as:
 
 ```
+# erase the code flash by pin-rst
 wlink erase --method pin-rst --speed low --chip CH32V30X
+# write the latest firmware, note the firmware I used here.
 wlink flash WCH-LinkE-APP-IAP.bin 
 ```
