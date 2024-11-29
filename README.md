@@ -481,7 +481,8 @@ If you don't use windows, please follow below steps to update the firmware of WC
 
 ## Get the latest firmware
 
-Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir:
+Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Download and extract it, find the `Firmware_Link` dir. I also put a copy of v2.8 and v2.15 firmwares in this repo.
+
 ```
 Firmware_Link/
 ├── WCH-Link_APP_IAP_ARM.bin   # ARM DAP firmware for WCH-Link
@@ -532,23 +533,43 @@ WCH-LinkE use CH32V305fbp6, you need another workable WCH-LinkE to program it.
 
 Wire up WCH-LinkE and the target WCH-LinkE as:
 ```
- +------------+            +---------------+
- |            |----3v3-----|               |
- |            |            |               |
- |            |----gnd-----|               |
- |            |            |               |
- | WCH-LinkE  |----dio-----| bricked CH32V |
- |            |            |               |
- |            |----clk-----|               |
- |            |            |               |
- |            |----nrst----|               |
- +------------+            +---------------+
+ +------------+            +-----------+
+ |            |----3v3-----|           |
+ |            |            |           |
+ |            |----gnd-----|           |
+ |            |            |  target   |
+ | WCH-LinkE  |----dio-----| WCH-LinkE |
+ |            |            |  to be    |
+ |            |----clk-----|  update   |
+ |            |            |           |
+ |            |----nrst----|           |
+ +------------+            +-----------+
 ```                                           
 
-Hold the "IAP" button of target WCH LinkE down and plug WCH LinkE to PC USB port, using wlink to program it as:
+Hold the "IAP" button of "target WCH-LinkE" down and plug WCH-LinkE to PC USB port, it will force the "target WCH-LinkE" enter IAP mode.
+
+Official WCH-LinkE has a plastic case, you can not press the IAP button unless break the case. I make a [toggle IAP mode tool](https://github.com/cjacker/opensource-toolchain-ch32v/tree/main/firmwares/toggle_iap_mode), you can use it to toggle IAP mode of WCH-LinkE.
+
+```
+cd firmwares/toggle_iap_mode
+make
+```
+
+to enter IAP mode, plus the "target WCH-LinkE" to PC USB port:
+```
+./switch_to_iap_mode
+```
+
+to quit IAP mode:
+```
+./quit_iap_mode
+```
+
+After set "target WCH-LinkE" to IAP mode, you don't need to hold the IAP button down when plug another WCH-LinkE directly to PC USB port.
+
+Then update the "target WCH-LinkE" firmware as:
 
 ```
 wlink erase --method pin-rst --speed low --chip CH32V30X
 wlink flash WCH-LinkE-APP-IAP.bin 
 ```
-
