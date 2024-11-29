@@ -555,17 +555,16 @@ cd firmwares/toggle_iap_mode
 make
 ```
 
-to enter IAP mode, plus the "target WCH-LinkE" to PC USB port:
+to enter IAP mode, plug the "target WCH-LinkE" to PC USB port:
 ```
 ./switch_to_iap_mode
 ```
-
 to quit IAP mode:
 ```
 ./quit_iap_mode
 ```
 
-After set "target WCH-LinkE" to IAP mode, you don't need to hold the IAP button down when plug another WCH-LinkE directly to PC USB port.
+After set "target WCH-LinkE" to IAP mode, unplug it. you don't need to hold the IAP button down when plug another WCH-LinkE directly to PC USB port.
 
 Then update the "target WCH-LinkE" firmware as:
 
