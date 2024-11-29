@@ -475,7 +475,7 @@ Open WCH LinkUtility and click 'Clear All Code Flash By Power Off'.
 
 # How to update firmware of WCH-Link/E
 
-**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware online by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). Currently, wlink didn't support update firmware online. 
+**NOTE:** If you have windows system, you can update WCH-Link/WCH-LinkE firmware online using IAP method by [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html). For linux, you should use [wlink-iap](https://github.com/cjacker/wlink-iap).
 
 If you don't use windows, please follow below steps to update the firmware of WCH-Link/LinkE:
 
@@ -485,13 +485,29 @@ Official firmwares from WCH can be extracted from [WCH-LinkUtility](https://www.
 
 ```
 Firmware_Link/
-├── WCH-Link_APP_IAP_ARM.bin   # ARM DAP firmware for WCH-Link
-├── WCH-Link_APP_IAP_RV.bin    # RV SWD firmware for WCH-Link
 ├── WCH-LinkE-APP-IAP.bin      # firmware for WCH-LinkE
+├── WCH-Link_APP_IAP_RV.bin    # RV SWD firmware for WCH-Link
+├── WCH-Link_APP_IAP_ARM.bin   # ARM DAP firmware for WCH-Link
+├── FIRMWARE_CH32V305.bin      # firmware of WCH-LinkE, for IAP
+├── FIRMWARE_CH549.bin         # RV SWD firmware of WCH-Link, for IAP.
+├── FIRMWARE_DAP_CH549.bin     # ARM DAP firmware of WCH-Link, for IAP. 
 
 ```
 
 At first, WCH-Link can also toggle DAP/RV mode by a button or software like WCH-LinkE, but due to the firmware size increased, it doesn't support dual mode anymore. MounRiver Studio also flash the corresponding firmware everytime when you toggle the mode of WCH-Link(without E).
+
+## Update firmware of WCH-Link/WCH-LinkE using IAP method
+
+**[wlink-iap](https://github.com/cjacker/wlink-iap)** is a cli tool to upgrade / downgrade WCH-LinkE firmware online using IAP method under linux.
+
+You don't have to enter ISP mode or buy another WCH-LinkE to upgrade the firmwares.
+
+The usage is very simple, just Plug the to-be-updated WCH-Link/LinkE to PC USB port and run:
+
+```
+wlink-iap FIRMWARE_XXXX.bin
+```
+**NOTE:** You should use IAP App firmwares (filename start with 'FIRMWARE_') with wlink-iap.
 
 ## Update firmware of WCH-Link
 
