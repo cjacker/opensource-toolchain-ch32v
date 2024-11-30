@@ -10,8 +10,8 @@
 #include "errorcode.h"
 #include "usb.h"
 
-static const uint16_t wlink_vids[] = {0x1a86, 0};
-static const uint16_t wlink_pids[] = {0x8010, 0};
+static const uint16_t wlink_vids[] = {0x1a86, 0x1a86, 0};
+static const uint16_t wlink_pids[] = {0x8010, 0x8012, 0};
 struct libusb_device_handle *wlink_handle = NULL;
 
 //4348:55e0 WinChipHead
@@ -24,9 +24,17 @@ int main(void)
   unsigned char txbuf[6];
   unsigned char rxbuf[20];
   unsigned int len = 5;
+
+  //is arm dap
+  int is_dap = 0;
+
+  //for rv mode, dap mode out is 2 and in is 0x83
+  int endp_out = 1;
+  int endp_in = 1;
+
   int ret;
 
-  if (jtag_libusb_open(wlink_vids, wlink_pids, &wlink_handle) != ERROR_OK)
+  if (jtag_libusb_open(wlink_vids, wlink_pids, &wlink_handle, &is_dap) != ERROR_OK)
   {
     printf("open wlink device failed\n");
     goto end;
@@ -40,40 +48,25 @@ int main(void)
     goto end;
   }
 
+  if (is_dap) {
+    endp_out = 2;
+    endp_in = 3;
+  }
+
   // read adatper type and firmware version
   txbuf[0] = 0x81;
   txbuf[1] = 0x0d;
   txbuf[2] = 0x01;
   txbuf[3] = 0x01;
   len = 4;
-  pWriteData(wlink_handle, 1, txbuf, &len);
+  pWriteData(wlink_handle, endp_out, txbuf, &len);
   len = 7;
-  pReadData(wlink_handle, 1, rxbuf, &len);
+  pReadData(wlink_handle, endp_in, rxbuf, &len);
   printf("adapter type:%x, version:%d.%d\n", rxbuf[5], rxbuf[3], rxbuf[4]);
 
   // according to adapter type, find correct firmware
   // and compare version info with wchlink.wcfg
   // for adapter type 0x02 and 0x12, it's WCH-LinkE: FIRMWARE_CH32V203.BIN  
-  
-  // get IAP type:0x02010f81 len 4
-  txbuf[0] = 0x81;
-  txbuf[1] = 0x0f;
-  txbuf[2] = 0x01;
-  txbuf[3] = 0x02;
-  len = 4;
-  ret = pWriteData(wlink_handle, 1, txbuf, &len);
-  if(ret != ERROR_OK) {
-    printf("get IAP type failed\n");
-    goto end;
-  }
-  len = 5;
-  ret = pReadData(wlink_handle, 1, rxbuf, &len);
-  if(ret != ERROR_OK) {
-     printf("read IAP type failed\n");
-     goto end;
-  }
-  // read IAP type: 82, f, 1, 2, f 
-  // printf("read IAP type: %x, %x, %x, %x, %x\n",rxbuf[0], rxbuf[1], rxbuf[2], rxbuf[3], rxbuf[4]);
   
   // set it to IAP mode: 0x01010f81 len 4
   txbuf[0] = 0x81;
@@ -81,7 +74,7 @@ int main(void)
   txbuf[2] = 0x01;
   txbuf[3] = 0x01;
   len = 4;
-  ret = pWriteData(wlink_handle, 1, txbuf, &len);
+  ret = pWriteData(wlink_handle, endp_out, txbuf, &len);
 
   if(ret != ERROR_OK) {
     printf("set IAP mode failed\n");
@@ -90,7 +83,9 @@ int main(void)
 
   sleep(1);
 
-  if (jtag_libusb_open(iap_vids, iap_pids, &iap_handle) != ERROR_OK)
+  int not_needed;
+
+  if (jtag_libusb_open(iap_vids, iap_pids, &iap_handle, &not_needed) != ERROR_OK)
   {
     printf("open iap device failed\n");
     goto end;

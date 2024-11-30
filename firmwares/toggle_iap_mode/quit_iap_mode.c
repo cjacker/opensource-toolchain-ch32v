@@ -22,7 +22,9 @@ int main(void)
   unsigned int len = 5;
   int ret;
 
-  if (jtag_libusb_open(iap_vids, iap_pids, &iap_handle) != ERROR_OK)
+  int not_used;
+
+  if (jtag_libusb_open(iap_vids, iap_pids, &iap_handle, &not_used) != ERROR_OK)
   {
     printf("open iap device failed\n");
     goto end;

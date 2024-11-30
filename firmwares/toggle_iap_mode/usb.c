@@ -60,11 +60,12 @@ int pReadData(libusb_device_handle *handle, int endpoint, unsigned char *buf, un
     {
       ret = jtag_libusb_bulk_read(handle, 0x81, buf, *length, 3000, &pr);
     }
-
-  else
+  else if (endpoint == 2)
     {
       ret = jtag_libusb_bulk_read(handle, 0x82, buf, *length, 3000, &pr);
     }
+  else if (endpoint == 3)
+      ret = jtag_libusb_bulk_read(handle, 0x83, buf, *length, 3000, &pr);
   return ret;
 }
 
@@ -79,12 +80,13 @@ static bool jtag_libusb_match_ids(struct libusb_device_descriptor *dev_desc,
 	dev_desc->idProduct == pids[i]) {
       return true;
     }
-  }                                                                           return false;
+  }                                                   
+  return false;
 }
 
 
 int jtag_libusb_open(const uint16_t vids[], const uint16_t pids[],
-		     struct libusb_device_handle **out)
+		     struct libusb_device_handle **out, int *is_dap)
 {
   int cnt, idx, err_code;
   int retval = ERROR_FAIL;
@@ -94,8 +96,9 @@ int jtag_libusb_open(const uint16_t vids[], const uint16_t pids[],
     return ERROR_FAIL;
   cnt = libusb_get_device_list(jtag_libusb_context, &devs);
 
+  struct libusb_device_descriptor dev_desc;
+
   for (idx = 0; idx < cnt; idx++) {
-    struct libusb_device_descriptor dev_desc;
 
     if (libusb_get_device_descriptor(devs[idx], &dev_desc) != 0)
       continue;
@@ -109,6 +112,11 @@ int jtag_libusb_open(const uint16_t vids[], const uint16_t pids[],
       fprintf(stderr,"libusb_open() failed with %s",
 	      libusb_error_name(err_code));
       continue;
+    }
+   
+    // detect WCH-Link in DAP mode or not. 
+    if(dev_desc.idProduct == 0x8012) {
+      *is_dap = 1;
     }
 
     /* Success. */
