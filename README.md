@@ -505,7 +505,7 @@ You don't have to enter ISP mode or buy another WCH-LinkE to upgrade the firmwar
 The usage is very simple, just Plug the to-be-updated WCH-Link/LinkE to PC USB port and run:
 
 ```
-wlink-iap FIRMWARE_XXXX.bin
+wlink-iap -f FIRMWARE_XXXX.bin
 ```
 **NOTE:** You should use IAP App firmwares (filename start with 'FIRMWARE_') with wlink-iap.
 
@@ -566,19 +566,15 @@ Hold the "IAP" button of "target WCH-LinkE" down and plug WCH-LinkE to PC USB po
 
 > IAP mode is not required to program the target WCH-LinkE, but under IAP mode, the target WCH-LinkE released the ocuppied pins and make itself able to be programmed as common CH32V dev board.
 
-Official WCH-LinkE has a plastic case, it prevent user to press the IAP button accidently unless break the case. I make a [toggle IAP mode tool](https://github.com/cjacker/opensource-toolchain-ch32v/tree/main/firmwares/toggle_iap_mode), you can use it to switch WCH-LinkE to IAP mode from commandline.
+Official WCH-LinkE has a plastic case, it prevent user to press the IAP button accidently unless break the case, you can use [wlink-iap](https://github.com/cjacker/wlink-iap) to switch WCH-LinkE to IAP mode from commandline.
 
+To enter IAP mode, plug the "target WCH-LinkE" to PC USB port:
 ```
-cd firmwares/toggle_iap_mode
-make
-```
-to enter IAP mode, plug the "target WCH-LinkE" to PC USB port:
-```
-./switch_to_iap_mode
+wlink-iap -i
 ```
 to quit IAP mode:
 ```
-./quit_iap_mode
+wlink-iap -q
 ```
 
 After switch "target WCH-LinkE" to IAP mode, unplug it. Then you don't need to hold the IAP button of "target WCH-LinkE" down when plug another WCH-LinkE directly to PC USB port.
