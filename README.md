@@ -224,14 +224,8 @@ Before programming with WCH-LinkE, please wire up 'WCH-LinkE' with target board 
 
 Since WCH-LinkE support dual mode (RV and DAP), please make sure your WCH-LinkE adapter is in RV mode. refer to next section to learn how to switch mode of WCH-LinkE with [wlink](https://github.com/ch32-rs/wlink).
 
-### update WCH-LinkE firmware to latest version
-
-If you encounter any error when using WCH-LinkE, you should try to update its firmware first. 
-
-Download [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html), when connect to target, it will popup a window to ask you update firmware or not.
-
-**NOTE:** WCH-LinkUtility can only run under windows.
-
+And if you encounter any problem when using WCH-LinkE, you should try to update its firmware first. Please refer to [How to update firmware of WCH-Link/E](#how-to-update-firmware-of-wch-linke) to update the firmware.
+ 
 ### with wlink
 
 [wlink](https://github.com/ch32-rs/wlink/) is a command line tool work with WCH-LinkE programmer/debugger.
@@ -397,11 +391,11 @@ The pre-converted project templates from WCH official EVT packages and supported
 
 **NOTE: below steps can also rescue a bricked WCH-LinkE.**
 
-If accidently programing wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, or system core clock set to wrong value, the ch32v may not be probed and programmed by WCH-LinkE anymore.
+If accidently programing wrong firmware to target board, the SWDIO/SWCLK pins may be occupied for other purpose, the target board may not be probed and programmed by WCH-LinkE anymore.
 
-Please check ISP mode first, it may still work. If the target board don't have ISP port or ISP not works anymore, you have a bricked CH32V now...
+Please try to activate ISP mode first, it may still work. If the target board don't have ISP port exported or ISP not works anymore, you have a bricked CH32V now...
 
-To rescue a bricked CH32V, you need erase all code flash.
+To rescue a bricked CH32V, you need to erase all code flash.
 
 ## Clear all code flash by pin NRST
 
@@ -421,9 +415,11 @@ Wire up WCH-LinkE and bricked CH32V as:
 ```                                           
 
 Run:
+
 ```
 wlink erase --method pin-rst --speed low --chip <chip type>
 ```
+
 Possible value of chip type:  CH32V103, CH57X, CH56X, CH32V20X, CH32V30X, CH582, CH32V003, CH8571, CH59X, CH643, CH32X035, CH32L103, CH641, CH585, CH564, CH32V007, CH645, CH32V317
 
 You can also use [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html) if you have windows system.
@@ -458,12 +454,14 @@ This way don't require NRST pin, wire up WCH-LinkE and bricked CH32V as:
 ```
 
 Run:
+
 ```
 wlink erase --method power-off --speed low --chip <chip type>
 ```
+
 Possible value of chip type:  CH32V103, CH57X, CH56X, CH32V20X, CH32V30X, CH582, CH32V003, CH8571, CH59X, CH643, CH32X035, CH32L103, CH641, CH585, CH564, CH32V007, CH645, CH32V317
 
-Then power up the bricked CH32V as quick as possible, for example, plug the usb cable to PC host quickly. You may need to try several times to succeed and it will erase all code flash of bricked CH32V.
+Then power up the bricked CH32V as quick as possible after the command excuted, for example, plug the usb cable to PC host quickly. You may need to try several times to succeed and it will erase all code flash of bricked CH32V.
 
 You can also use [WCH-LinkUtility](https://www.wch.cn/downloads/WCH-LinkUtility_ZIP.html) if you have windows system.
 
